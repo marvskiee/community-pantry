@@ -14,7 +14,7 @@ const About = () => {
         <div className="  w-full h-screen flex flex-col items-center p-10 top-0 absolute bg-slate-200/20">
           <p className="mb-10 text-white text-3xl font-bold">About Us</p>
           <p className="text-justify text-white text-2xl max-w-laptop">
-            "Sed ut perspiciatis unde omnis iste natus error sit voluptatem
+            Sed ut perspiciatis unde omnis iste natus error sit voluptatem
             accusantium doloremque laudantium, totam rem aperiam, eaque ipsa
             quae ab illo inventore veritatis et quasi architecto beatae vitae
             dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit
@@ -27,7 +27,7 @@ const About = () => {
             aliquid ex ea commodi consequatur? Quis autem vel eum iure
             reprehenderit qui in ea voluptate velit esse quam nihil molestiae
             consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla
-            pariatur?"
+            pariatur?
           </p>
         </div>
         <img

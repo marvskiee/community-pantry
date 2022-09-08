@@ -58,7 +58,7 @@ const AuthLayout = ({ authMode, setAuthMode }) => {
         <div className="bg-white p-10 rounded-xl w-full sm:w-2/3">
           <p className="text-xl font-semibold">Login</p>
           {loginField.map(({ ref, label, type }, index) => (
-            <div className="flex flex-col gap-2">
+            <div className="flex flex-col gap-2" key={index}>
               <label className="text-center font-semibold p-4">{label}:</label>
               <input
                 className="rounded-full px-4 py-3 border"
@@ -75,7 +75,7 @@ const AuthLayout = ({ authMode, setAuthMode }) => {
               Log In
             </button>
             <p className="font-semibold">
-              Don't have an account yet?{"  "}
+              Don&apos;t have an account yet?{"  "}
               <span
                 className="cursor-pointer text-emerald-500"
                 onClick={() => setAuthMode("register")}
@@ -97,7 +97,7 @@ const AuthLayout = ({ authMode, setAuthMode }) => {
             information below.
           </p>
           {registerField.map(({ ref, label, type }, index) => (
-            <div className="flex flex-col gap-2">
+            <div className="flex flex-col gap-2" key={index}>
               <label className="text-center font-semibold p-4">{label}:</label>
               <input
                 className="rounded-full px-4 py-3 border"

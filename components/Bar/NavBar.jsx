@@ -21,7 +21,7 @@ const NavBar = () => {
       <Image src="/logo.png" alt="Logo" width={40} height={40} />
       <div className="flex">
         {links.map(({ name, link }, index) => (
-          <Link href={link}>
+          <Link href={link} key={index}>
             <p className=" cursor-pointer hover:text-slate-700 transition-colors py-5 px-4 font-medium text-md uppercase">
               {name}
             </p>
