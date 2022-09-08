@@ -16,7 +16,11 @@ const Login = () => {
         <div className="w-full justify-center h-screen overflow-auto flex flex-col items-center p-10 top-0 absolute bg-slate-200/20">
           <AuthLayout authMode={authMode} setAuthMode={setAuthMode} />
         </div>
-        <img src="/homebg.png" className="w-full h-full object-cover" />
+        <img
+          alt="bg"
+          src="/homebg.png"
+          className="w-full h-full object-cover"
+        />
       </div>
     </div>
   );

@@ -16,7 +16,11 @@ const Home = () => {
             Get Started with us
           </button>
         </div>
-        <img src="/homebg.png" className="w-full h-full object-cover" />
+        <img
+          alt="bg"
+          src="/homebg.png"
+          className="w-full h-full object-cover"
+        />
       </div>
     </div>
   );
