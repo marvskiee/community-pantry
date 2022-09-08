@@ -1,4 +1,9 @@
-import { HeaderLayout, SideBar, WrapperLayout } from "../../components";
+import {
+  HeaderLayout,
+  ModifyStoryCard,
+  SideBar,
+  AdminWrapperLayout,
+} from "../../components";
 
 const ForApprovalStory = () => {
   return (
@@ -6,7 +11,9 @@ const ForApprovalStory = () => {
       <HeaderLayout title="For Approval Story" />
       <div className="flex">
         <SideBar />
-        <WrapperLayout title="For Approval Story"></WrapperLayout>
+        <AdminWrapperLayout title="For Approval Story">
+          <ModifyStoryCard />
+        </AdminWrapperLayout>
       </div>
     </div>
   );

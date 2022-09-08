@@ -126,7 +126,7 @@ const AuthLayout = ({ authMode, setAuthMode }) => {
   };
   return (
     <div className="max-w-authCard w-full rounded-2xl flex-col sm:flex-row bg-emerald-500  flex items-center justify-center ">
-      <div className="text-white w-1/3 p-4 sm:p-10 flex items-center justify-center flex-col">
+      <div className="text-white sm:w-1/3 w-full p-4 sm:p-10 flex items-center justify-center flex-col">
         <img alt="logo" src="logo.png" className="w-20 h-20" />
         <p className="font-bold text-3xl">Welcome to</p>
         <p className="font-semibold text-xl">Community Basket</p>

@@ -7,6 +7,10 @@ module.exports = {
     extend: {
       minHeight: {
         "screen-nav": "calc(100vh - 64px)",
+        sidebar: "calc(100vh - 20rem)",
+      },
+      maxHeight: {
+        sidebar: "calc(100vh - 20rem)",
       },
       maxWidth: {
         laptop: "900px",

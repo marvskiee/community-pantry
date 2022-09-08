@@ -1,4 +1,9 @@
-import { HeaderLayout, SideBar, WrapperLayout } from "../../components";
+import {
+  HeaderLayout,
+  ModifyStoryCard,
+  SideBar,
+  AdminWrapperLayout,
+} from "../../components";
 
 const DeletedStory = () => {
   return (
@@ -6,7 +11,9 @@ const DeletedStory = () => {
       <HeaderLayout title="Deleted Story" />
       <div className="flex">
         <SideBar />
-        <WrapperLayout title="Deleted Story"></WrapperLayout>
+        <AdminWrapperLayout title="Deleted Story">
+          <ModifyStoryCard />
+        </AdminWrapperLayout>
       </div>
     </div>
   );

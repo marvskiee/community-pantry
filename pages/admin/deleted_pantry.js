@@ -1,4 +1,9 @@
-import { HeaderLayout, SideBar, WrapperLayout } from "../../components";
+import {
+  HeaderLayout,
+  ModifyPantryCard,
+  SideBar,
+  AdminWrapperLayout,
+} from "../../components";
 
 const DeletedPantry = () => {
   return (
@@ -6,7 +11,9 @@ const DeletedPantry = () => {
       <HeaderLayout title="Deleted Pantry" />
       <div className="flex">
         <SideBar />
-        <WrapperLayout title="Deleted Pantry"></WrapperLayout>
+        <AdminWrapperLayout title="Deleted Pantry">
+          <ModifyPantryCard />
+        </AdminWrapperLayout>
       </div>
     </div>
   );

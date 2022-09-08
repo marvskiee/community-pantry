@@ -1,4 +1,9 @@
-import { HeaderLayout, SideBar, WrapperLayout } from "../../components";
+import {
+  HeaderLayout,
+  ModifyPantryCard,
+  SideBar,
+  AdminWrapperLayout,
+} from "../../components";
 
 const ApprovedPantry = () => {
   return (
@@ -6,7 +11,9 @@ const ApprovedPantry = () => {
       <HeaderLayout title="Approved Pantry" />
       <div className="flex">
         <SideBar />
-        <WrapperLayout title="Approved Pantry"></WrapperLayout>
+        <AdminWrapperLayout title="Approved Pantry">
+          <ModifyPantryCard />
+        </AdminWrapperLayout>
       </div>
     </div>
   );

@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 import { BackgroundLayout, HeaderLayout, NavBar } from "../components";
 const Home = () => {
   return (
@@ -10,9 +11,11 @@ const Home = () => {
           <p className="sm:text-6xl text-3xl text-white font-bold text-center">
             Barangay Community Pantry
           </p>
-          <button className="p-4 sm:text-2xl text-xl text-white bg-emerald-500 rounded-full font-bold px-10 ">
-            Get Started with us
-          </button>
+          <Link href="/login">
+            <a className="p-4 sm:text-2xl text-xl text-white bg-emerald-500 rounded-full font-bold px-10 ">
+              Get Started with us
+            </a>
+          </Link>
         </div>
         <BackgroundLayout />
       </div>
