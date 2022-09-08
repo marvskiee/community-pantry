@@ -1,19 +1,16 @@
 import Head from "next/head";
 import Image from "next/image";
-import { NavBar } from "../components";
+import { HeaderLayout, NavBar, BackgroundLayout } from "../components";
 
 const About = () => {
   return (
     <div>
-      <Head>
-        <title>My page title</title>
-        <meta name="viewport" content="initial-scale=1.0, width=device-width" />
-      </Head>
+      <HeaderLayout title="About" />
       <NavBar />
-      <div className="bg-slate-900 w-full relative overflow-hidden h-screen max-h-screen-nav">
-        <div className="  w-full h-screen flex flex-col items-center p-10 top-0 absolute bg-slate-200/20">
+      <div className="  w-full min-h-screen-nav relative flex flex-col items-center p-10 justify-center">
+        <div className="rounded-lg relative z-10 bg-slate-900/50 p-10">
           <p className="mb-10 text-white text-3xl font-bold">About Us</p>
-          <p className="text-justify text-white text-2xl max-w-laptop">
+          <p className="text-justify text-white text-lg max-w-laptop">
             Sed ut perspiciatis unde omnis iste natus error sit voluptatem
             accusantium doloremque laudantium, totam rem aperiam, eaque ipsa
             quae ab illo inventore veritatis et quasi architecto beatae vitae
@@ -30,11 +27,7 @@ const About = () => {
             pariatur?
           </p>
         </div>
-        <img
-          alt="bg"
-          src="/homebg.png"
-          className="w-full h-full object-cover"
-        />
+        <BackgroundLayout />
       </div>
     </div>
   );

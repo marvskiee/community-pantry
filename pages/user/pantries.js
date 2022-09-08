@@ -1,7 +1,15 @@
-import React from "react";
+import { HeaderLayout, SideBar, WrapperLayout } from "../../components";
 
-const Pantries = () => {
-  return <div>Pantries</div>;
+const Home = () => {
+  return (
+    <div>
+      <HeaderLayout title="Pantries" />
+      <div className="flex">
+        <SideBar />
+        <WrapperLayout title="Pantries"></WrapperLayout>
+      </div>
+    </div>
+  );
 };
 
-export default Pantries;
+export default Home;

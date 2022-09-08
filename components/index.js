@@ -11,3 +11,6 @@ export { default as AddPantryLayout } from "./Layout/AddPantryLayout.jsx";
 export { default as AuthLayout } from "./Layout/AuthLayout.jsx";
 export { default as ViewMorePantryLayout } from "./Layout/ViewMorePantryLayout.jsx";
 export { default as YourPantryLayout } from "./Layout/YourPantryLayout.jsx";
+export { default as HeaderLayout } from "./Layout/HeaderLayout.jsx";
+export { default as BackgroundLayout } from "./Layout/BackgroundLayout.jsx";
+export { default as WrapperLayout } from "./Layout/WrapperLayout.jsx";

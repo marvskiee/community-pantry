@@ -1,7 +1,15 @@
-import React from "react";
+import { HeaderLayout, SideBar, WrapperLayout } from "../../components";
 
 const Home = () => {
-  return <div>Home</div>;
+  return (
+    <div>
+      <HeaderLayout title="Home" />
+      <div className="flex">
+        <SideBar />
+        <WrapperLayout title="Home"></WrapperLayout>
+      </div>
+    </div>
+  );
 };
 
 export default Home;

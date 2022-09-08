@@ -17,7 +17,7 @@ const NavBar = () => {
     },
   ];
   return (
-    <div className=" flex items-center justify-between px-4">
+    <div className=" flex items-center justify-between px-4 sticky top-0 z-20 bg-white">
       <Image src="/logo.png" alt="Logo" width={40} height={40} />
       <div className="flex">
         {links.map(({ name, link }, index) => (

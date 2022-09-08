@@ -5,7 +5,7 @@ module.exports = {
   ],
   theme: {
     extend: {
-      maxHeight: {
+      minHeight: {
         "screen-nav": "calc(100vh - 64px)",
       },
       maxWidth: {

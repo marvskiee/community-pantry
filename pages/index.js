@@ -1,26 +1,20 @@
-import Head from "next/head";
 import Image from "next/image";
-import { NavBar } from "../components";
+import { BackgroundLayout, HeaderLayout, NavBar } from "../components";
 const Home = () => {
   return (
     <div>
-      <Head>
-        <title>My page title</title>
-        <meta name="viewport" content="initial-scale=1.0, width=device-width" />
-      </Head>
+      <HeaderLayout title="" />
       <NavBar />
-      <div className="bg-slate-900 w-full relative overflow-hidden h-screen max-h-screen-nav">
-        <div className="w-full h-screen flex flex-col items-center justify-center top-0 absolute bg-slate-200/20">
-          <img src="homebarangay.png" className="px-10" />
+      <div className="bg-slate-900 w-full relative min-h-screen-nav">
+        <div className="relative p-10 flex flex-col gap-5 items-center justify-center z-10 min-h-screen-nav bg-slate-900/50">
+          <p className="text-6xl text-white font-bold p-10 text-center">
+            Barangay Community Pantry
+          </p>
           <button className="p-4 text-2xl text-white bg-emerald-500 rounded-full font-bold px-10 ">
             Get Started with us
           </button>
         </div>
-        <img
-          alt="bg"
-          src="/homebg.png"
-          className="w-full h-full object-cover"
-        />
+        <BackgroundLayout />
       </div>
     </div>
   );

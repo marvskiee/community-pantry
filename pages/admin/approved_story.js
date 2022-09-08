@@ -1,14 +1,13 @@
-import Head from "next/head";
-import Image from "next/image";
+import { HeaderLayout, SideBar, WrapperLayout } from "../../components";
 
 const ApprovedStory = () => {
   return (
     <div>
-      <Head>
-        <title>My page title</title>
-        <meta name="viewport" content="initial-scale=1.0, width=device-width" />
-      </Head>
-      <p>Hello world!</p>
+      <HeaderLayout title="Approved Story" />
+      <div className="flex">
+        <SideBar />
+        <WrapperLayout title="Approved Story"></WrapperLayout>
+      </div>
     </div>
   );
 };
