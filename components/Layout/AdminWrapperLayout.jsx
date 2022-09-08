@@ -6,7 +6,7 @@ const AdminWrapperLayout = ({ children, title }) => {
       <p className="z-20 sticky top-0 bg-slate-100 sm:p-10 p-5 text-2xl uppercase tracking-wide font-light text-center ">
         {title}
       </p>
-      <div className="sm:p-10 p-5">{children}</div>
+      <div className="sm:px-10 px-5 sm:pb-10 pb-5">{children}</div>
     </div>
   );
 };
