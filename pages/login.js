@@ -1,15 +1,19 @@
 import Head from "next/head";
 import Image from "next/image";
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import {
   AuthLayout,
   BackgroundLayout,
   HeaderLayout,
   NavBar,
 } from "../components";
-
+import { getUser } from "../services/user.services";
+import { useRouter } from "next/router";
 const Login = () => {
   const [authMode, setAuthMode] = useState();
+  const mounted = useRef();
+  const router = useRouter();
+
   return (
     <div>
       <HeaderLayout title="Login" />

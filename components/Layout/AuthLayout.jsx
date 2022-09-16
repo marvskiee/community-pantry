@@ -1,8 +1,12 @@
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import { authLogin, registerUser } from "../../services/user.services";
 const AuthLayout = ({ authMode, setAuthMode }) => {
   const usernameRef = useRef();
+  const [errors, setErrors] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [success, setSuccess] = useState(false);
   const emailRef = useRef();
   const passwordRef = useRef();
   const confirmPasswordRef = useRef();
@@ -12,21 +16,25 @@ const AuthLayout = ({ authMode, setAuthMode }) => {
       ref: usernameRef,
       label: "Username",
       type: "text",
+      error: "usernameError",
     },
     {
       ref: emailRef,
       label: "Email",
       type: "email",
+      error: "emailError",
     },
     {
       ref: passwordRef,
       label: "Password",
       type: "password",
+      error: "passwordError",
     },
     {
       ref: confirmPasswordRef,
       label: "Confirm Password",
       type: "password",
+      error: "confirmPasswordError",
     },
   ];
   const loginField = [
@@ -34,32 +42,65 @@ const AuthLayout = ({ authMode, setAuthMode }) => {
       ref: usernameRef,
       label: "Username",
       type: "text",
+      error: "usernameError",
     },
     {
       ref: passwordRef,
       label: "Password",
       type: "password",
+      error: "passwordError",
     },
   ];
-  const loginHandler = (e) => {
+  const loginHandler = async (e) => {
+    setIsLoading(true);
     e.preventDefault();
-    if (
-      usernameRef.current.value == "admin" &&
-      passwordRef.current.value == "admin"
-    ) {
-      router.push("/admin");
+    const newData = {
+      username: usernameRef.current?.value || "",
+      password: passwordRef.current?.value || "",
+    };
+    const { success, errors, data } = await authLogin(newData);
+    console.log(errors);
+    if (success) {
+      // console.log(data);
+      router.push("/" + data?.role);
     } else {
-      router.push("/user");
+      setErrors(errors);
+      setIsLoading(false);
     }
+  };
+  const registerHandler = async () => {
+    setIsLoading(true);
+    const newData = {
+      username: usernameRef.current?.value || "",
+      email: emailRef.current?.value || "",
+      password: passwordRef.current?.value || "",
+      confirmPassword: confirmPasswordRef.current?.value || "'",
+    };
+    console.log(newData);
+    const { success, errors } = await registerUser(newData);
+    if (success) {
+      setIsLoading(false);
+      setSuccess(true);
+      setErrors(null);
+    } else {
+      setIsLoading(false);
+      setErrors(errors);
+    }
+    // const {success} =  await
   };
   const loginCard = () => {
     return (
       <>
         <div className="bg-white p-10 rounded-xl w-full sm:w-2/3">
           <p className="text-xl font-semibold">Login</p>
-          {loginField.map(({ ref, label, type }, index) => (
+          {loginField.map(({ ref, label, type, error }, index) => (
             <div className="flex flex-col gap-2" key={index}>
               <label className="text-center font-semibold p-4">{label}:</label>
+              {errors && (
+                <span className="text-center text-rose-500">
+                  {errors[error]}
+                </span>
+              )}
               <input
                 className="rounded-full px-4 py-3 border"
                 type={type}
@@ -68,17 +109,26 @@ const AuthLayout = ({ authMode, setAuthMode }) => {
             </div>
           ))}
           <div className="mt-4 w-full gap-4  flex flex-col items-center justify-center">
-            <button
-              onClick={loginHandler}
-              className=" px-10 py-3 text-xl text-white bg-emerald-500 rounded-full font-bold"
-            >
-              Log In
-            </button>
+            {!isLoading ? (
+              <button
+                onClick={loginHandler}
+                className=" px-10 py-3 text-xl text-white bg-emerald-500 rounded-full font-bold"
+              >
+                Log In
+              </button>
+            ) : (
+              <span className=" px-10 py-3 text-xl text-white bg-emerald-500 rounded-full font-bold">
+                Logging In...
+              </span>
+            )}
             <p className="font-semibold">
               Don&apos;t have an account yet?{"  "}
               <span
                 className="cursor-pointer text-emerald-500"
-                onClick={() => setAuthMode("register")}
+                onClick={() => {
+                  setSuccess(false);
+                  setAuthMode("register");
+                }}
               >
                 Register
               </span>
@@ -91,36 +141,66 @@ const AuthLayout = ({ authMode, setAuthMode }) => {
   const registerCard = () => {
     return (
       <>
-        <div className="bg-white p-10 rounded-xl sm:w-2/3 w-full">
-          <p className="text-xl font-semibold">
-            Get Started with us today! Create your account by filling out the
-            information below.
-          </p>
-          {registerField.map(({ ref, label, type }, index) => (
-            <div className="flex flex-col gap-2" key={index}>
-              <label className="text-center font-semibold p-4">{label}:</label>
-              <input
-                className="rounded-full px-4 py-3 border"
-                type={type}
-                ref={ref}
-              />
-            </div>
-          ))}
-          <div className="mt-4 w-full gap-4  flex flex-col items-center justify-center">
-            <button className=" px-10 py-3 text-xl text-white bg-emerald-500 rounded-full font-bold">
-              Sign Up
-            </button>
-            <p className="font-semibold">
-              Already have an account?{" "}
-              <span
-                className="cursor-pointer text-emerald-500"
-                onClick={() => setAuthMode("login")}
-              >
-                Login
-              </span>
+        {!success ? (
+          <div className="bg-white p-10 rounded-xl sm:w-2/3 w-full">
+            <p className="text-xl font-semibold">
+              Get Started with us today! Create your account by filling out the
+              information below.
             </p>
+            {registerField.map(({ ref, label, type, error }, index) => (
+              <div className="flex flex-col gap-2" key={index}>
+                <label className="text-center font-semibold pt-4">
+                  {label}:
+                </label>
+                {errors && (
+                  <span className="text-center text-rose-500">
+                    {errors[error]}
+                  </span>
+                )}
+                <input
+                  className="rounded-full px-4 py-3 border"
+                  type={type}
+                  ref={ref}
+                />
+              </div>
+            ))}
+            <div className="mt-4 w-full gap-4  flex flex-col items-center justify-center">
+              {!isLoading ? (
+                <button
+                  onClick={registerHandler}
+                  className=" px-10 py-3 text-xl text-white bg-emerald-500 rounded-full font-bold"
+                >
+                  Sign Up
+                </button>
+              ) : (
+                <span className=" px-10 py-3 text-xl text-white bg-emerald-500 rounded-full font-bold">
+                  Signing up ...
+                </span>
+              )}
+              <p className="font-semibold">
+                Already have an account?{" "}
+                <span
+                  className="cursor-pointer text-emerald-500"
+                  onClick={() => setAuthMode("login")}
+                >
+                  Login
+                </span>
+              </p>
+            </div>
           </div>
-        </div>
+        ) : (
+          <div className="bg-white p-10 rounded-xl sm:w-2/3 w-full flex flex-col items-center">
+            <p className="text-xl font-semibold">
+              You have now created an account please, Please proceed to login.
+            </p>
+            <button
+              onClick={() => setAuthMode("login")}
+              className=" px-10 py-3 text-xl text-white bg-emerald-500 mt-5 rounded-full font-bold"
+            >
+              Login
+            </button>
+          </div>
+        )}
       </>
     );
   };

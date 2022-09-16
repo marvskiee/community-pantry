@@ -1,17 +1,48 @@
 import Link from "next/link";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/router";
 import { MenuSvg } from "../Svg";
+import { useAppContext } from "../../context/AppContext";
+import { authLogout, getUser } from "../../services/user.services";
+import { getPantry } from "../../services/pantry.services";
+import { getStory } from "../../services/story.services";
+
 const SideBar = () => {
   const router = useRouter();
+  const { state, dispatch } = useAppContext();
   const [pageData, setPageData] = useState();
+  const mounted = useRef();
   useEffect(() => {
-    const role = router.pathname.split("/")[1];
-    setPageData({
-      pathname: router.pathname.split("/")[2],
-      links: role == "admin" ? adminLinks : userLinks,
-    });
-  }, []);
+    const load = () => {
+      const final = async () => {
+        const { success, data } = await getUser();
+        if (success) {
+          dispatch({ type: "AUTH_USER", value: data });
+          const pantry_res = await getPantry();
+          if (pantry_res.success) {
+            dispatch({ type: "SET_PANTRY", value: pantry_res.data });
+          }
+          const story_res = await getStory();
+          if (story_res.success) {
+            dispatch({ type: "SET_STORY", value: story_res.data });
+          }
+        }
+      };
+      if (!state.user) {
+        final();
+      }
+      const role = router.pathname.split("/")[1];
+      setPageData({
+        pathname: router.pathname.split("/")[2],
+        links: role == "admin" ? adminLinks : userLinks,
+      });
+      mounted.current = true;
+    };
+
+    if (!mounted.current) {
+      load();
+    }
+  });
   const userLinks = [
     {
       name: "Home",
@@ -56,11 +87,15 @@ const SideBar = () => {
       link: "/admin/deleted_story",
     },
   ];
-  const signOutHandler = () => {
-    router.push("/login");
+  const signOutHandler = async () => {
+    const { success } = await authLogout();
+    if (success) {
+      dispatch({ type: "UPDATE_USER", value: null });
+      router.push("/login");
+    }
   };
   return (
-    <div className="max-h-sidebar min-h-screen py-10  overflow-y-auto scroll-smooth bg-emerald-600 flex flex-col sm:max-w-xs max-w-min justify-between">
+    <div className="max-h-sidebar min-h-screen py-10  overflow-y-auto scroll-smooth bg-emerald-600 flex flex-col lg:max-w-xs max-w-min justify-between">
       <div className="flex items-center justify-center flex-col">
         {/* <button
           onClick={() => setHidden(!hidden)}
@@ -68,7 +103,7 @@ const SideBar = () => {
         >
           <MenuSvg />
         </button> */}
-        <img src="../logo.png" className="w-full aspect-video object-contain" />
+        <img src="/logo.png" className="w-full aspect-video object-contain" />
       </div>
       <div>
         {pageData &&
@@ -78,7 +113,7 @@ const SideBar = () => {
                 className={`${
                   pageData.pathname == link.split("/")[2] &&
                   "bg-white text-emerald-500"
-                } p-4 sm:text-left text-center sm:px-8 px-4 text-white hover:bg-emerald-700 sm:text-lg text-sm cursor-pointer transition-colors`}
+                } p-4 md:text-left text-center sm:px-8 px-4 text-white hover:bg-emerald-700 sm:text-lg text-sm cursor-pointer transition-colors`}
               >
                 {name}
               </p>

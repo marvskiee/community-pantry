@@ -11,6 +11,7 @@ module.exports = {
       },
       maxHeight: {
         sidebar: "calc(100vh - 20rem)",
+        modal: "calc(100vh - 5rem)",
       },
       maxWidth: {
         laptop: "900px",
