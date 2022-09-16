@@ -39,11 +39,11 @@ const RestoreModal = ({ setModalMode, data, type }) => {
       <div>
         {type == "pantry" ? (
           <p className="font-semibold text-lg mb-4">
-            Are you sure you want to restore "{data.name}" pantry?
+            Are you sure you want to restore &quot;{data.name}&quot; pantry?
           </p>
         ) : (
           <p className="font-semibold text-lg mb-4">
-            Are you sure you want to restore "{data.name}" story?
+            Are you sure you want to restore &quot;{data.name}&quot; story?
           </p>
         )}
         <div className="flex gap-4 justify-end">
