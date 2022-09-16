@@ -21,3 +21,4 @@ export { default as ApprovedModal } from "./Modal/ApprovedModal.jsx";
 export { default as DeletedModal } from "./Modal/DeletedModal.jsx";
 export { default as RestoreModal } from "./Modal/RestoreModal.jsx";
 export { default as ViewMoreModal } from "./Modal/ViewMoreModal.jsx";
+export { default as UpdateStoryModal } from "./Modal/UpdateStoryModal.jsx";

@@ -17,10 +17,10 @@ const ViewPantryCard = ({ data, setViewMoreModal }) => {
                 <p className="font-semibold text-lg">{username}</p>
                 <p>{moment(dateTime).format("MMM DD YYYY")}</p>
               </div>
-              <div className="flex items-start justify-center sm:flex-row flex-col gap-4">
+              <div className="flex items-start justify-center lg:flex-row flex-col gap-4">
                 <img
                   src={pantryImage}
-                  className="w-52 h-52 rounded-lg bg-slate-200"
+                  className="w-full lg:w-auto object-cover h-52 aspect-video rounded-lg bg-slate-200"
                 />
                 <div className="w-full flex gap-4 flex-col">
                   <p className="">

@@ -1,11 +1,26 @@
 import React, { useState, useRef } from "react";
 import { CheckSvg, DeleteSvg, EditSvg, RestoreSvg } from "../Svg";
-import { ApprovedModal, DeletedModal, RestoreModal } from "../index";
+import {
+  ApprovedModal,
+  DeletedModal,
+  RestoreModal,
+  UpdateModal,
+} from "../index";
 const ModifyPantryCard = ({ data, status }) => {
   const [modalMode, setModalMode] = useState("");
   const selectedDataRef = useRef();
   return (
     <>
+      {modalMode == "edit" && (
+        <UpdateModal
+          setModalMode={setModalMode}
+          data={{
+            name: data[selectedDataRef.current].username,
+            id: data[selectedDataRef.current]._id,
+          }}
+          type="pantry"
+        />
+      )}
       {modalMode == "approved" && (
         <ApprovedModal
           setModalMode={setModalMode}
@@ -70,7 +85,13 @@ const ModifyPantryCard = ({ data, status }) => {
                         <CheckSvg />
                       </span>
                     )}
-                    <span className="px-4 py-2 flex hover:bg-emerald-700 cursor-pointer bg-emerald-500 ">
+                    <span
+                      onClick={() => {
+                        selectedDataRef.current = index;
+                        setModalMode("edit");
+                      }}
+                      className="px-4 py-2 flex hover:bg-emerald-700 cursor-pointer bg-emerald-500 "
+                    >
                       <EditSvg />
                     </span>
                     {status == "deleted" && (
@@ -100,7 +121,7 @@ const ModifyPantryCard = ({ data, status }) => {
                 <div className="flex lg:flex-row flex-col">
                   <img
                     src={pantryImage}
-                    className="mb-4 rounded-md w-40 h-40 mr-10 bg-slate-300"
+                    className="mb-4 rounded-md w-40 h-40 mr-10 bg-slate-300 object-cover"
                   />
                   <div>
                     <div>

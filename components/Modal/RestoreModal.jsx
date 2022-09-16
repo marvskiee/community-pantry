@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import ModalLayout from "../Layout/ModalLayout";
 import { updatePantry, getPantry } from "../../services/pantry.services";
 import { useAppContext } from "../../context/AppContext";
@@ -6,8 +6,9 @@ import { updateStory, getStory } from "../../services/story.services";
 
 const RestoreModal = ({ setModalMode, data, type }) => {
   const { dispatch } = useAppContext();
-
+  const [isLoading, setIsLoading] = useState();
   const confirmHandler = async () => {
+    setIsLoading(true);
     if (type == "pantry") {
       const newData = {
         status: "pending",
@@ -19,6 +20,7 @@ const RestoreModal = ({ setModalMode, data, type }) => {
           dispatch({ type: "SET_PANTRY", value: pantry_res.data });
           setModalMode("");
         }
+        setIsLoading("false");
       }
     } else {
       const newData = {
@@ -31,6 +33,7 @@ const RestoreModal = ({ setModalMode, data, type }) => {
           dispatch({ type: "SET_STORY", value: story_res.data });
           setModalMode("");
         }
+        setIsLoading("false");
       }
     }
   };
@@ -47,18 +50,26 @@ const RestoreModal = ({ setModalMode, data, type }) => {
           </p>
         )}
         <div className="flex gap-4 justify-end">
-          <button
-            onClick={() => setModalMode("")}
-            className="p-3 px-8 bg-slate-400 transition-colors hover:bg-emerald-700 text-white rounded-full "
-          >
-            Cancel
-          </button>
-          <button
-            onClick={confirmHandler}
-            className="p-3 px-8 bg-emerald-600 transition-colors hover:bg-emerald-700 text-white rounded-full "
-          >
-            Confirm
-          </button>
+          {!isLoading ? (
+            <>
+              <button
+                onClick={() => setModalMode("")}
+                className="p-3 px-8 bg-slate-400 transition-colors hover:bg-emerald-700 text-white rounded-full "
+              >
+                Cancel
+              </button>
+              <button
+                onClick={confirmHandler}
+                className="p-3 px-8 bg-emerald-600 transition-colors hover:bg-emerald-700 text-white rounded-full "
+              >
+                Confirm
+              </button>
+            </>
+          ) : (
+            <p className="p-3 px-8 bg-emerald-600 text-white rounded-full ">
+              Savings...
+            </p>
+          )}
         </div>
       </div>
     </ModalLayout>

@@ -1,12 +1,23 @@
 import React, { useState, useRef } from "react";
 import { CheckSvg, DeleteSvg, EditSvg, RestoreSvg } from "../Svg";
-import { ApprovedModal, DeletedModal, RestoreModal } from "../index";
+import {
+  ApprovedModal,
+  DeletedModal,
+  RestoreModal,
+  UpdateStoryModal,
+} from "../index";
 
 const ModifyStoryCard = ({ data, status }) => {
   const [modalMode, setModalMode] = useState("");
   const selectedDataRef = useRef();
   return (
     <>
+      {modalMode == "edit" && (
+        <UpdateStoryModal
+          setModalMode={setModalMode}
+          data={data[selectedDataRef.current]}
+        />
+      )}
       {modalMode == "approved" && (
         <ApprovedModal
           setModalMode={setModalMode}
@@ -58,7 +69,13 @@ const ModifyStoryCard = ({ data, status }) => {
                       <CheckSvg />
                     </span>
                   )}
-                  <span className="px-4 py-2 flex hover:bg-emerald-700 cursor-pointer bg-emerald-500 ">
+                  <span
+                    onClick={() => {
+                      selectedDataRef.current = index;
+                      setModalMode("edit");
+                    }}
+                    className="px-4 py-2 flex hover:bg-emerald-700 cursor-pointer bg-emerald-500 "
+                  >
                     <EditSvg />
                   </span>
                   {status == "deleted" && (
@@ -88,7 +105,7 @@ const ModifyStoryCard = ({ data, status }) => {
               </div>
               <div className="flex flex-col items-center justify-center">
                 <img
-                  className="rounded-md aspect-video h-52 bg-slate-300"
+                  className="w-full rounded-md aspect-video object-cover bg-slate-300"
                   src={image}
                 />
                 <p className="font-semibold text-lg my-4">{pantryName}</p>
