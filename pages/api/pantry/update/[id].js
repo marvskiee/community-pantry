@@ -32,6 +32,21 @@ export default async (req, res) => {
         });
       }
       break;
+    case "DELETE":
+      try {
+        const pantry = await Pantry.findByIdAndDelete(id);
+        if (pantry) {
+          res.status(200).json({
+            success: true,
+          });
+        }
+      } catch (error) {
+        res.status(400).json({
+          success: false,
+          error: error,
+        });
+      }
+      break;
     default:
       res.status(400).json({ success: false });
       break;

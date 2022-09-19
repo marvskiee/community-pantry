@@ -22,3 +22,6 @@ export { default as DeletedModal } from "./Modal/DeletedModal.jsx";
 export { default as RestoreModal } from "./Modal/RestoreModal.jsx";
 export { default as ViewMoreModal } from "./Modal/ViewMoreModal.jsx";
 export { default as UpdateStoryModal } from "./Modal/UpdateStoryModal.jsx";
+export { default as UpdatePantryModal } from "./Modal/UpdatePantryModal.jsx";
+export { default as PermanentDeletedStory } from "./Modal/PermanentDeletedStory.jsx";
+export { default as PermanentDeletedPantry } from "./Modal/PermanentDeletedPantry.jsx";

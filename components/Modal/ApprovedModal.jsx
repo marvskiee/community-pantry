@@ -70,7 +70,7 @@ const ApprovedModal = ({ setModalMode, data, type }) => {
             </>
           ) : (
             <p className="p-3 px-8 bg-emerald-600 text-white rounded-full ">
-              Savings...
+              Saving...
             </p>
           )}
         </div>

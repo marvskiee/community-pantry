@@ -11,7 +11,7 @@ import { useAppContext } from "../../context/AppContext";
 import { storage } from "../../services/firebase";
 import { updateStory, getStory } from "../../services/story.services";
 
-const UpdateStoryModal = ({ setModalMode, data, type }) => {
+const UpdateStoryModal = ({ setModalMode, data }) => {
   const [isLoading, setIsLoading] = useState();
   const { dispatch } = useAppContext();
 
@@ -27,7 +27,7 @@ const UpdateStoryModal = ({ setModalMode, data, type }) => {
         uploadFile();
       })
       .catch((error) => {
-        console.log(error);
+        // console.log(error);
         uploadFile();
       });
   };
@@ -130,7 +130,7 @@ const UpdateStoryModal = ({ setModalMode, data, type }) => {
       </div>
     );
   };
-  return <ModalLayout>{type == "story" ? storyUI() : <div></div>}</ModalLayout>;
+  return <ModalLayout>{storyUI()}</ModalLayout>;
 };
 
 export default UpdateStoryModal;

@@ -4,7 +4,8 @@ import {
   ApprovedModal,
   DeletedModal,
   RestoreModal,
-  UpdateModal,
+  UpdatePantryModal,
+  PermanentDeletedPantry,
 } from "../index";
 const ModifyPantryCard = ({ data, status }) => {
   const [modalMode, setModalMode] = useState("");
@@ -12,13 +13,15 @@ const ModifyPantryCard = ({ data, status }) => {
   return (
     <>
       {modalMode == "edit" && (
-        <UpdateModal
+        <UpdatePantryModal
           setModalMode={setModalMode}
-          data={{
-            name: data[selectedDataRef.current].username,
-            id: data[selectedDataRef.current]._id,
-          }}
-          type="pantry"
+          data={data[selectedDataRef.current]}
+        />
+      )}
+      {modalMode == "permanent_deleted" && (
+        <PermanentDeletedPantry
+          setModalMode={setModalMode}
+          data={data[selectedDataRef.current]}
         />
       )}
       {modalMode == "approved" && (
@@ -95,15 +98,27 @@ const ModifyPantryCard = ({ data, status }) => {
                       <EditSvg />
                     </span>
                     {status == "deleted" && (
-                      <span
-                        onClick={() => {
-                          selectedDataRef.current = index;
-                          setModalMode("restore");
-                        }}
-                        className="px-4 py-2 flex hover:bg-emerald-700 cursor-pointer bg-emerald-500 "
-                      >
-                        <RestoreSvg />
-                      </span>
+                      <>
+                        <span
+                          onClick={() => {
+                            selectedDataRef.current = index;
+                            setModalMode("restore");
+                          }}
+                          className="px-4 py-2 flex hover:bg-emerald-700 cursor-pointer bg-emerald-500 "
+                        >
+                          <RestoreSvg />
+                        </span>
+                        <span
+                          onClick={() => {
+                            console.log("hello");
+                            selectedDataRef.current = index;
+                            setModalMode("permanent_deleted");
+                          }}
+                          className="px-4 py-2 flex hover:bg-emerald-700 cursor-pointer bg-emerald-500 "
+                        >
+                          <DeleteSvg />
+                        </span>
+                      </>
                     )}
                     {status != "deleted" && (
                       <span

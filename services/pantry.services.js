@@ -47,3 +47,15 @@ export const addPantry = async (newData) => {
   const result = await res.json();
   return result;
 };
+
+export const deletePantry = async (id) => {
+  const res = await fetch("/api/pantry/update/" + id, {
+    method: "DELETE",
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+    },
+  });
+  const result = await res.json();
+  return result;
+};

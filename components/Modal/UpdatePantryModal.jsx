@@ -1,42 +1,53 @@
+import React, { useState, useRef } from "react";
+import ModalLayout from "../Layout/ModalLayout";
 import {
-  HeaderLayout,
-  ModalLayout,
-  SideBar,
-  UserWrapperLayout,
-  ViewMoreModal,
-  ViewPantryCard,
-} from "../../../components";
-import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+  ref,
+  uploadBytes,
+  getDownloadURL,
+  deleteObject,
+} from "firebase/storage";
 import { v4 } from "uuid";
-import { storage } from "../../../services/firebase";
-import React, { useState, useRef, useEffect } from "react";
-import { addPantry } from "../../../services/pantry.services";
-import { useAppContext } from "../../../context/AppContext";
-import Link from "next/link";
-const Home = () => {
-  const [modal, setModal] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState(null);
-  const { state } = useAppContext();
-  const modalModeRef = useRef();
-  const [data, setData] = useState();
-  useEffect(() => {
-    setData(state?.pantry?.filter((p) => p.status == "approved"));
-  }, [state?.pantry]);
-  const savePantryImage = () => {
-    setIsLoading(true);
-    setError(null);
+import { useAppContext } from "../../context/AppContext";
+import { storage } from "../../services/firebase";
+import { updatePantry, getPantry } from "../../services/pantry.services";
 
-    if (pantryImage?.file == null) {
-      setIsLoading(false);
-      return;
-    }
+const UpdatePantryModal = ({ setModalMode, data }) => {
+  const [isLoading, setIsLoading] = useState();
+  const { dispatch } = useAppContext();
+  const [error, setError] = useState();
+  // pantry var
+  const [pantryImage, setPantryImage] = useState(null);
+  const hiddenPantryImageRef = useRef();
+  const hiddenSupplyImageRef = useRef();
+  const setImageUrlRef = useRef();
+  const [supplyList, setSupplyList] = useState(data.supply);
+  const supplyImageIndexRef = useRef();
+  const deletedSupplyUrl = useRef([]);
+  const pantryNameRef = useRef();
+  const aboutUsRef = useRef();
+  const addressRef = useRef();
+  const contactRef = useRef();
+  const guidelineRef = useRef();
+  const supplyNameRef = useRef();
+  const readyDataRef = useRef();
+
+  // STEP 2 UPDATE THE PANTRY IMAGE IF STATE IS CHANGED
+  const updatePantryImage = () => {
     const imageRef = ref(storage, `images/${pantryImage.file.name + v4()}`);
+    let pictureRef = ref(storage, data?.pantryImage);
+    console.log(data?.pantryImage);
+    deleteObject(pictureRef)
+      .then(() => {})
+      .catch((error) => {
+        console.log(error);
+      });
     uploadBytes(imageRef, pantryImage.file)
       .then((snapshot) => {
         getDownloadURL(snapshot.ref).then((url) => {
-          readyDataRef.current = { ...readyDataRef.current, pantryImage: url };
-          saveSupplyImage();
+          readyDataRef.current = {
+            pantryImage: url,
+          };
+          updateSupplyImage(true);
         });
       })
       .catch((e) => {
@@ -44,67 +55,104 @@ const Home = () => {
         setIsLoading(false);
       });
   };
-  const saveSupplyImage = () => {
+  // STEP 3 UPDATE THE SUPPLY IMAGE
+  const updateSupplyImage = (isImageChanged) => {
+    if (!isImageChanged) {
+      readyDataRef.current = {
+        pantryImage: data.pantryImage,
+      };
+    }
     let tmp = [];
     for (let i = 0; i < supplyList.length; i++) {
-      console.log(supplyList[i]);
-      const imageRef = ref(
-        storage,
-        `images/${supplyList[i].image.file.name + v4()}`
-      );
-      uploadBytes(imageRef, supplyList[i].image.file).then((snapshot) => {
-        getDownloadURL(snapshot.ref)
-          .then((url) => {
-            // console.log("iterable: ", supplyList[i]);
-            // console.log("image: ", url);
-            // console.log("index", i);
-            tmp.push({ ...supplyList[i], image: url });
-            readyDataRef.current.supply = tmp;
-            // console.log("log: ", readyDataRef.current);
-            // console.log("count: ", tmp.length);
-            if (tmp.length == supplyList.length) {
-              console.log("******************************* ready");
-              finalHandler();
-            }
-          })
-          .catch((e) => {
-            console.log("Error", e);
-            setIsLoading(false);
-            return;
-          });
-      });
+      if (supplyList[i].image?.url) {
+        const imageRef = ref(
+          storage,
+          `images/${supplyList[i].image.file.name + v4()}`
+        );
+        uploadBytes(imageRef, supplyList[i].image.file).then((snapshot) => {
+          getDownloadURL(snapshot.ref)
+            .then((url) => {
+              tmp.push({ ...supplyList[i], image: url });
+              readyDataRef.current.supply = tmp;
+              if (tmp.length == supplyList.length) {
+                console.log("******************************* ready");
+                finalHandler();
+                console.log("passed 2");
+              }
+            })
+            .catch((e) => {
+              console.log("Error", e);
+              setIsLoading(false);
+              return;
+            });
+        });
+      } else {
+        tmp.push({ ...supplyList[i] });
+        readyDataRef.current.supply = tmp;
+        if (tmp.length == supplyList.length) {
+          console.log("******************************* ready");
+          finalHandler();
+          console.log("passed 2");
+        }
+      }
     }
   };
+
   const finalHandler = async () => {
     const newData = {
-      username: state?.user?.username,
-      user_id: state?.user?._id,
       pantryName: pantryNameRef.current?.value.trim(),
       aboutUs: aboutUsRef.current?.value.trim(),
       address: addressRef.current?.value.trim(),
       contact: contactRef.current?.value.trim(),
       guideline: guidelineRef.current?.value.trim(),
-      status: "pending",
+      pantryImage: readyDataRef.current.pantryImage,
       supply: readyDataRef.current.supply,
       pantryImage: readyDataRef.current.pantryImage,
     };
     // console.log(newData);
-    const { success, error } = await addPantry(newData);
+    const { success, error } = await updatePantry(newData, data?._id);
     if (success) {
       setIsLoading(false);
       clearForm();
-      // console.log(newData);
+      console.log("passed 3");
+      deleteFromFirebase();
+
+      const pantry_res = await getPantry();
+      if (pantry_res.success) {
+        dispatch({ type: "SET_PANTRY", value: pantry_res.data });
+        setModalMode("");
+        console.log("passed 4");
+      }
     } else {
       console.log(error);
+    }
+  };
+  // STEP 4 DELETE THE IMAGE
+  const deleteFromFirebase = (url) => {
+    let ct = 0;
+    for (let i of deletedSupplyUrl.current) {
+      let pictureRef = ref(storage, url);
+      console.log(url);
+      deleteObject(pictureRef)
+        .then(() => {
+          ct += 1;
+          if (deletedSupplyUrl.length - 1 == ct) {
+            setIsLoading(false);
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+          setIsLoading(false);
+        });
     }
   };
   const clearForm = () => {
     readyDataRef.current = {};
     setSupplyList([]);
-    setModal(false);
     setPantryImage(null);
     setError(null);
   };
+  // STEP 1 VALIDATE THE FORM AND FIELD
   const validateHandler = () => {
     const newData = {
       pantryName: pantryNameRef.current.value.trim(),
@@ -114,8 +162,10 @@ const Home = () => {
       guideline: guidelineRef.current.value.trim(),
     };
     let { pantryName, aboutUs, address, contact, guideline } = newData;
+    console.log(pantryImage);
+    console.log("check", supplyList);
+
     if (
-      pantryImage != null &&
       pantryName.length > 0 &&
       aboutUs.length > 0 &&
       address.length > 0 &&
@@ -129,29 +179,19 @@ const Home = () => {
           return;
         }
       }
-      savePantryImage();
-      console.log("yes");
-      console.log(newData);
+      setIsLoading(true);
+
+      console.log("check", supplyList);
+      if (pantryImage != null) {
+        updatePantryImage();
+      } else {
+        updateSupplyImage();
+      }
+      console.log("passed 1");
     } else {
       setError("All fields are required!");
     }
   };
-
-  const pantryNameRef = useRef();
-  const aboutUsRef = useRef();
-  const addressRef = useRef();
-  const contactRef = useRef();
-  const guidelineRef = useRef();
-  const supplyNameRef = useRef();
-
-  const [supplyList, setSupplyList] = useState([]);
-  const hiddenSupplyImageRef = useRef();
-  const hiddenPantryImageRef = useRef();
-  const [pantryImage, setPantryImage] = useState(null);
-  const supplyImageIndexRef = useRef();
-  const readyDataRef = useRef();
-
-  const [viewMoreData, setViewMoreData] = useState(null);
 
   const supplyHandler = () => {
     if (supplyNameRef.current.value.trim().length > 0) {
@@ -176,13 +216,17 @@ const Home = () => {
     setSupplyList([...clone]);
   };
   const removeHandler = (index) => {
+    const selected = supplyList[index];
+    if (selected?.url) {
+      deletedSupplyUrl.current = [...deletedSupplyUrl.current, selected];
+    }
     setSupplyList([...supplyList.filter((sup, i) => i != index)]);
   };
   const supplyImageHandler = (index) => {
     supplyImageIndexRef.current = index;
     hiddenSupplyImageRef.current.click();
   };
-  const addPantryUI = () => {
+  const pantryUI = () => {
     return (
       <div className="flex flex-col gap-4">
         {error && (
@@ -198,12 +242,10 @@ const Home = () => {
           <p className="z-10 text-2xl h-full w-full flex items-center justify-center font-semibold text-slate-100 bg-slate-900/20 p-4 text-center">
             Choose image to upload
           </p>
-          {pantryImage?.url && (
-            <img
-              src={pantryImage?.url}
-              className="absolute top-0 left-0 w-full h-full object-cover"
-            />
-          )}
+          <img
+            src={pantryImage?.url || data?.pantryImage}
+            className="absolute top-0 left-0 w-full h-full object-cover"
+          />
           <input
             className="hidden"
             ref={hiddenPantryImageRef}
@@ -226,27 +268,32 @@ const Home = () => {
           className="rounded-full px-4 py-3 border"
           placeholder="Pantry Name"
           type="text"
+          defaultValue={data?.pantryName}
           ref={pantryNameRef}
         />
         <textarea
           className="rounded-full px-4 py-3 border"
           placeholder="About us"
+          defaultValue={data?.aboutUs}
           ref={aboutUsRef}
         />
         <textarea
           className="rounded-full px-4 py-3 border"
           placeholder="Address"
+          defaultValue={data?.address}
           ref={addressRef}
         />
         <input
           className="rounded-full px-4 py-3 border"
           placeholder="Contact Information"
           type="number"
+          defaultValue={data?.contact}
           ref={contactRef}
         />
         <textarea
           className="rounded-full px-4 py-3 border"
           placeholder="Pantry Guidelines"
+          defaultValue={data?.guideline}
           ref={guidelineRef}
         />
         <div className="flex gap-4 items-center justify-end">
@@ -291,9 +338,9 @@ const Home = () => {
                 <p className="text-center text-xs z-10 text-white bg-slate-900/40 flex items-center justify-center font-semibold h-full w-full">
                   Pick Image
                 </p>
-                {image && (
+                {(image || image?.url) && (
                   <img
-                    src={image?.url}
+                    src={image?.url || image}
                     className="absolute w-full h-full top-0 left-0"
                     alt="supply image"
                   />
@@ -335,9 +382,7 @@ const Home = () => {
           ) : (
             <>
               <button
-                onClick={() => {
-                  clearForm();
-                }}
+                onClick={() => setModalMode("")}
                 className="p-3 px-8 bg-slate-400 transition-colors hover:bg-emerald-700 text-white rounded-full "
               >
                 Cancel
@@ -354,47 +399,7 @@ const Home = () => {
       </div>
     );
   };
-
-  const buttons = () => {
-    return (
-      <div className="flex gap-4 sm:flex-row flex-col ">
-        <button
-          onClick={() => {
-            modalModeRef.current = "add_pantry";
-            setModal(true);
-          }}
-          className="rounded-full p-3 px-8 hover:bg-emerald-700 bg-emerald-600 transition-colors text-white"
-        >
-          Create your own pantry
-        </button>
-        <Link href={"../user/pantries/me"}>
-          <button className="rounded-full p-3 px-8 hover:bg-emerald-700 bg-emerald-600 transition-colors text-white">
-            Check your pantry
-          </button>
-        </Link>
-      </div>
-    );
-  };
-  return (
-    <div>
-      {viewMoreData && (
-        <ModalLayout>
-          <ViewMoreModal
-            data={viewMoreData}
-            setViewMoreModal={setViewMoreData}
-          />
-        </ModalLayout>
-      )}
-      {modal && <ModalLayout>{addPantryUI()}</ModalLayout>}
-      <HeaderLayout title="Pantries" />
-      <div className="flex">
-        <SideBar />
-        <UserWrapperLayout title="Pantries" buttons={buttons}>
-          <ViewPantryCard data={data} setViewMoreModal={setViewMoreData} />
-        </UserWrapperLayout>
-      </div>
-    </div>
-  );
+  return <ModalLayout>{pantryUI()}</ModalLayout>;
 };
 
-export default Home;
+export default UpdatePantryModal;

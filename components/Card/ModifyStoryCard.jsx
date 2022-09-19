@@ -5,6 +5,7 @@ import {
   DeletedModal,
   RestoreModal,
   UpdateStoryModal,
+  PermanentDeletedStory,
 } from "../index";
 
 const ModifyStoryCard = ({ data, status }) => {
@@ -48,6 +49,12 @@ const ModifyStoryCard = ({ data, status }) => {
           type="story"
         />
       )}
+      {modalMode == "permanent_deleted" && (
+        <PermanentDeletedStory
+          setModalMode={setModalMode}
+          data={data[selectedDataRef.current]}
+        />
+      )}
       <div className="flex flex-col sm:gap-10 gap-5">
         {data && data.length > 0 ? (
           data.map(({ username, pantryName, image }, index) => (
@@ -79,15 +86,27 @@ const ModifyStoryCard = ({ data, status }) => {
                     <EditSvg />
                   </span>
                   {status == "deleted" && (
-                    <span
-                      onClick={() => {
-                        selectedDataRef.current = index;
-                        setModalMode("restore");
-                      }}
-                      className="px-4 py-2 flex hover:bg-emerald-700 cursor-pointer bg-emerald-500 "
-                    >
-                      <RestoreSvg />
-                    </span>
+                    <>
+                      <span
+                        onClick={() => {
+                          selectedDataRef.current = index;
+                          setModalMode("restore");
+                        }}
+                        className="px-4 py-2 flex hover:bg-emerald-700 cursor-pointer bg-emerald-500 "
+                      >
+                        <RestoreSvg />
+                      </span>
+                      <span
+                        onClick={() => {
+                          console.log("hello");
+                          selectedDataRef.current = index;
+                          setModalMode("permanent_deleted");
+                        }}
+                        className="px-4 py-2 flex hover:bg-emerald-700 cursor-pointer bg-emerald-500 "
+                      >
+                        <DeleteSvg />
+                      </span>
+                    </>
                   )}
                   {status != "deleted" && (
                     <span

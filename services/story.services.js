@@ -48,3 +48,15 @@ export const addStory = async (newData) => {
   const result = await res.json();
   return result;
 };
+
+export const deleteStory = async (id) => {
+  const res = await fetch("/api/story/update/" + id, {
+    method: "DELETE",
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+    },
+  });
+  const result = await res.json();
+  return result;
+};
