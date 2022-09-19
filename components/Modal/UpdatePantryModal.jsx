@@ -224,7 +224,7 @@ const UpdatePantryModal = ({ setModalMode, data }) => {
   };
   const supplyImageHandler = (index) => {
     supplyImageIndexRef.current = index;
-    hiddenSupplyImageRef.current.click();
+    hiddenSupplyImageRef.current?.click();
   };
   const pantryUI = () => {
     return (
