@@ -26,6 +26,8 @@ const SideBar = () => {
           if (story_res.success) {
             dispatch({ type: "SET_STORY", value: story_res.data });
           }
+        } else {
+          router.push("/login");
         }
       };
       if (!state.user) {
@@ -91,8 +93,8 @@ const SideBar = () => {
     const { success } = await authLogout();
     if (success) {
       dispatch({ type: "UPDATE_USER", value: null });
-      router.push("/login");
     }
+    router.push("/login");
   };
   return (
     <div className="max-h-sidebar min-h-screen py-10  overflow-y-auto scroll-smooth bg-emerald-600 flex flex-col lg:max-w-xs max-w-min justify-between">

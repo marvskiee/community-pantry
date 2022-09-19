@@ -75,7 +75,6 @@ const UpdatePantryModal = ({ setModalMode, data }) => {
               tmp.push({ ...supplyList[i], image: url });
               readyDataRef.current.supply = tmp;
               if (tmp.length == supplyList.length) {
-                console.log("******************************* ready");
                 finalHandler();
                 console.log("passed 2");
               }
@@ -90,7 +89,6 @@ const UpdatePantryModal = ({ setModalMode, data }) => {
         tmp.push({ ...supplyList[i] });
         readyDataRef.current.supply = tmp;
         if (tmp.length == supplyList.length) {
-          console.log("******************************* ready");
           finalHandler();
           console.log("passed 2");
         }
@@ -112,10 +110,10 @@ const UpdatePantryModal = ({ setModalMode, data }) => {
     // console.log(newData);
     const { success, error } = await updatePantry(newData, data?._id);
     if (success) {
+      deleteFromFirebase();
       setIsLoading(false);
       clearForm();
       console.log("passed 3");
-      deleteFromFirebase();
 
       const pantry_res = await getPantry();
       if (pantry_res.success) {
@@ -131,8 +129,8 @@ const UpdatePantryModal = ({ setModalMode, data }) => {
   const deleteFromFirebase = (url) => {
     let ct = 0;
     for (let i of deletedSupplyUrl.current) {
-      let pictureRef = ref(storage, url);
-      console.log(url);
+      let pictureRef = ref(storage, i);
+      console.log(i);
       deleteObject(pictureRef)
         .then(() => {
           ct += 1;
