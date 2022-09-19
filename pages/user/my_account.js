@@ -206,7 +206,7 @@ const MyAccount = () => {
           type="text"
           id="password"
         />
-        <div className="flex gap-4">
+        <div className="flex gap-4 justify-end items-start">
           <button
             onClick={() => {
               setModal(false);

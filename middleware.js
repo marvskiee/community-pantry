@@ -8,17 +8,10 @@ export default function middleware(req) {
   let url = req.url;
   const domain = "http://localhost:3000/";
 
-  // if (
-  //   (verifys && url.includes("/login")) ||
-  //   url.includes("/about") ||
-  //   url === domain
-  // ) {
-  //   return NextResponse.redirect(`${domain}authenticate`);
-  // }
-  //   if (
-  //     (!verifys && url.split("/")[3] == "user") ||
-  //     url.split("/")[3] == "admin"
-  //   ) {
-  //     return NextResponse.redirect(`${domain}login`);
-  //   }
+  if (!verifys && url.split("/")[3] == "user") {
+    return NextResponse.redirect(`${domain}login`);
+  }
+  if (!verifys && url.split("/")[3] == "admin") {
+    return NextResponse.redirect(`${domain}login`);
+  }
 }
