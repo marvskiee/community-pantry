@@ -6,7 +6,7 @@ export default function middleware(req) {
 
   let verifys = req.cookies.get("OursiteJWT");
   let url = req.url;
-  const domain = "http://localhost:3000/";
+  const domain = "https://bc-pantry.herokuapp.com/";
 
   if (!verifys && url.split("/")[3] == "user") {
     return NextResponse.redirect(`${domain}login`);
