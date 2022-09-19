@@ -221,6 +221,7 @@ const UpdatePantryModal = ({ setModalMode, data }) => {
     setSupplyList([...supplyList.filter((sup, i) => i != index)]);
   };
   const supplyImageHandler = (index) => {
+    console.log(index);
     supplyImageIndexRef.current = index;
     hiddenSupplyImageRef.current?.click();
   };
@@ -311,8 +312,11 @@ const UpdatePantryModal = ({ setModalMode, data }) => {
           )}
         </div>
         <div className="flex gap-2 flex-col">
-          {supplyList.map(({ name, quantity, image }, index) => (
-            <div key={index} className="flex items-center justify-between">
+          {supplyList.map(({ name, quantity, image, _id }, index) => (
+            <div
+              key={_id || index}
+              className="flex items-center justify-between"
+            >
               <input
                 ref={hiddenSupplyImageRef}
                 type="file"
