@@ -1,5 +1,5 @@
 import React, { useState, useRef } from "react";
-import { CheckSvg, DeleteSvg, EditSvg, RestoreSvg, DeclineSvg } from "../Svg";
+import { CheckSvg, DeleteSvg, EditSvg, RestoreSvg } from "../Svg";
 import {
   ApprovedModal,
   DeletedModal,
@@ -8,15 +8,9 @@ import {
   PermanentDeletedPantry,
 } from "../index";
 import moment from "moment";
-const ModifyPantryCard = ({ data, status, deleted, declineIcon }) => {
+const UserPantryCard = ({ data, status, meOnly }) => {
   const [modalMode, setModalMode] = useState("");
   const selectedDataRef = useRef();
-  const reasonings = [
-    { value: "r1", label: "Reason 1" },
-    { value: "r2", label: "Reason 2" },
-    { value: "r3", label: "Reason 3" },
-    { value: "r4", label: "Reason 4" },
-  ];
   return (
     <>
       {modalMode == "edit" && (
@@ -47,7 +41,6 @@ const ModifyPantryCard = ({ data, status, deleted, declineIcon }) => {
           data={{
             name: data[selectedDataRef.current].pantryName,
             id: data[selectedDataRef.current]._id,
-            status: data[selectedDataRef.current].status,
           }}
           type="pantry"
         />
@@ -74,9 +67,9 @@ const ModifyPantryCard = ({ data, status, deleted, declineIcon }) => {
                 address,
                 contact,
                 supply,
-                open,
+                status,
                 close,
-                reason,
+                open,
               },
               index
             ) => (
@@ -138,7 +131,7 @@ const ModifyPantryCard = ({ data, status, deleted, declineIcon }) => {
                         }}
                         className="px-4 py-2 flex hover:bg-emerald-700 cursor-pointer bg-emerald-500 "
                       >
-                        {declineIcon ? <DeclineSvg /> : <DeleteSvg />}
+                        <DeleteSvg />
                       </span>
                     )}
                   </div>
@@ -148,7 +141,7 @@ const ModifyPantryCard = ({ data, status, deleted, declineIcon }) => {
                     src={pantryImage}
                     className="mb-4 rounded-md w-40 h-40 mr-10 bg-slate-300 object-cover"
                   />
-                  <div>
+                  <div className="w-full">
                     <div>
                       <p>
                         <span className="font-semibold text-lg">
@@ -175,7 +168,7 @@ const ModifyPantryCard = ({ data, status, deleted, declineIcon }) => {
                         {aboutUs}
                       </p>
                       <p>
-                        <span className="font-semibold ">
+                        <span className="font-semibold text-lg">
                           Opening and Closing hours:{" "}
                         </span>
                         {moment(open).format("hh:mm A")} -{" "}
@@ -232,34 +225,16 @@ const ModifyPantryCard = ({ data, status, deleted, declineIcon }) => {
                           )
                         )}
                       </div>
-                      {deleted && (
-                        <div>
-                          <p>
-                            <span className="font-semibold text-lg">
-                              Deleted By:{" "}
-                            </span>
-                            {reason.deleted_by == "user" ? username : "Admin"}
-                          </p>
-                          <p>
-                            <span className="font-semibold text-lg">
-                              Reason for deletion:{" "}
-                            </span>
-                            {reasonings.map(({ value, label }, index) => (
-                              <p key={index}>{reason[value] && label}</p>
-                            ))}
-                          </p>
-                        </div>
-                      )}
                     </div>
                   </div>
                 </div>
-                {/* {meOnly && (
+                {meOnly && (
                   <p className="text-xl text-right text-rose-500">
                     {status == "pending"
                       ? "WAITING FOR APPROVAL"
                       : status.toUpperCase() + " PANTRY"}
                   </p>
-                )} */}
+                )}
               </div>
             )
           )
@@ -271,4 +246,4 @@ const ModifyPantryCard = ({ data, status, deleted, declineIcon }) => {
   );
 };
 
-export default ModifyPantryCard;
+export default UserPantryCard;

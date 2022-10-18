@@ -6,6 +6,7 @@ export { default as ModifyStoryCard } from "./Card/ModifyStoryCard.jsx";
 export { default as ViewStoryCard } from "./Card/ViewStoryCard.jsx";
 export { default as ViewPantryCard } from "./Card/ViewPantryCard.jsx";
 export { default as DashboardCard } from "./Card/DashboardCard.jsx";
+export { default as UserPantryCard } from "./Card/UserPantryCard.jsx";
 
 export { default as AddPantryLayout } from "./Layout/AddPantryLayout.jsx";
 export { default as AuthLayout } from "./Layout/AuthLayout.jsx";

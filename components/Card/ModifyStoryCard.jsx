@@ -1,5 +1,5 @@
 import React, { useState, useRef } from "react";
-import { CheckSvg, DeleteSvg, EditSvg, RestoreSvg } from "../Svg";
+import { CheckSvg, DeclineSvg, DeleteSvg, EditSvg, RestoreSvg } from "../Svg";
 import {
   ApprovedModal,
   DeletedModal,
@@ -8,7 +8,7 @@ import {
   PermanentDeletedStory,
 } from "../index";
 
-const ModifyStoryCard = ({ data, status }) => {
+const ModifyStoryCard = ({ data, status, declineIcon }) => {
   const [modalMode, setModalMode] = useState("");
   const selectedDataRef = useRef();
   return (
@@ -57,7 +57,7 @@ const ModifyStoryCard = ({ data, status }) => {
       )}
       <div className="flex flex-col sm:gap-10 gap-5">
         {data && data.length > 0 ? (
-          data.map(({ username, pantryName, image }, index) => (
+          data.map(({ username, caption, image }, index) => (
             <div
               className="rounded-lg border bg-white sm:p-10 p-5 "
               key={index}
@@ -98,7 +98,7 @@ const ModifyStoryCard = ({ data, status }) => {
                       </span>
                       <span
                         onClick={() => {
-                          console.log("hello");
+                          // console.log("hello");
                           selectedDataRef.current = index;
                           setModalMode("permanent_deleted");
                         }}
@@ -112,12 +112,12 @@ const ModifyStoryCard = ({ data, status }) => {
                     <span
                       onClick={() => {
                         selectedDataRef.current = index;
-                        console.log(data[index]);
+                        // console.log(data[index]);
                         setModalMode("deleted");
                       }}
                       className="px-4 py-2 flex hover:bg-emerald-700 cursor-pointer bg-emerald-500 "
                     >
-                      <DeleteSvg />
+                      {declineIcon ? <DeclineSvg /> : <DeleteSvg />}
                     </span>
                   )}
                 </div>
@@ -127,7 +127,9 @@ const ModifyStoryCard = ({ data, status }) => {
                   className="w-full rounded-md aspect-video object-cover bg-slate-300"
                   src={image}
                 />
-                <p className="font-semibold text-lg my-4">{pantryName}</p>
+                <p className="w-full font-semibold text-lg my-4">
+                  Caption: {caption}
+                </p>
               </div>
             </div>
           ))

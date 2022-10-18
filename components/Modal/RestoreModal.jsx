@@ -19,6 +19,7 @@ const RestoreModal = ({ setModalMode, data, type }) => {
         if (pantry_res.success) {
           dispatch({ type: "SET_PANTRY", value: pantry_res.data });
           setModalMode("");
+          return;
         }
         setIsLoading("false");
       }
@@ -32,6 +33,7 @@ const RestoreModal = ({ setModalMode, data, type }) => {
         if (story_res.success) {
           dispatch({ type: "SET_STORY", value: story_res.data });
           setModalMode("");
+          return;
         }
         setIsLoading("false");
       }

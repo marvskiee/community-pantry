@@ -1,5 +1,5 @@
 import React from "react";
-
+import moment from "moment";
 const ViewMoreModal = ({ data, setViewMoreModal }) => {
   const {
     username,
@@ -10,6 +10,8 @@ const ViewMoreModal = ({ data, setViewMoreModal }) => {
     contact,
     guideline,
     supply,
+    open,
+    close,
   } = data;
   return (
     <div className=" bg-white">
@@ -39,31 +41,64 @@ const ViewMoreModal = ({ data, setViewMoreModal }) => {
               <span className="font-semibold text-lg">Address: </span> {address}
             </p>
             <p>
-              <span className="font-semibold text-lg">About us: </span>
+              <span className="font-semibold text-lg">
+                Rules and Regulation:{" "}
+              </span>
               {aboutUs}
             </p>
             <p>
+              <span className="font-semibold text-lg">
+                Opening and Closing hours:{" "}
+              </span>
+              {moment(open).format("hh:mm A")} -{" "}
+              {moment(close).format("hh:mm A")}
+            </p>
+            {/* <p>
               <span className="font-semibold text-lg">Guidelines: </span>
               {guideline}
-            </p>
+            </p> */}
             <p>
               <span className="font-semibold text-lg">
                 Available Supplies:{" "}
               </span>
             </p>
             <div className="flex gap-4 mt-4 flex-wrap">
-              {supply.map(({ name, quantity, image }, index) => (
-                <div key={index} className="relative">
-                  <img
-                    src={image}
-                    className="w-20 h-20 rounded-lg bg-slate-200"
-                  />
-                  <p>{name}</p>
-                  <p className="aspect-square px-2 py-1 rounded-full bg-slate-600 text-white absolute top-0 right-0">
-                    {quantity}
-                  </p>
-                </div>
-              ))}
+              {supply?.map(
+                (
+                  { name, quantity, image, expiration_date, date_added },
+                  index
+                ) => (
+                  <div
+                    key={index}
+                    className="flex border rounded-md p-4 gap-4 w-full"
+                  >
+                    <div className="relative ">
+                      <img
+                        src={image}
+                        className="w-20 h-20 rounded-lg bg-slate-200"
+                      />
+                      <p className="flex items-center text-center justify-center aspect-square w-8 h-8 rounded-full bg-slate-600 text-white absolute top-0 right-0">
+                        {quantity}
+                      </p>
+                    </div>
+
+                    <div>
+                      <p className="font-semibold">{name}</p>
+                      <div className="flex gap-4">
+                        <p>
+                          Expiration Date: <br />
+                          {moment(expiration_date).format("YYYY-MM-DD")}
+                        </p>
+
+                        <p>
+                          Date added: <br />
+                          {moment(date_added).format("YYYY-MM-DD")}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                )
+              )}
             </div>
           </div>
         </div>

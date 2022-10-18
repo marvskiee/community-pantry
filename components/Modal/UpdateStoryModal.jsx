@@ -14,6 +14,7 @@ import { updateStory, getStory } from "../../services/story.services";
 const UpdateStoryModal = ({ setModalMode, data }) => {
   const [isLoading, setIsLoading] = useState();
   const { dispatch } = useAppContext();
+  const captionRef = useRef();
 
   // story var
   const [storyImage, setStoryImage] = useState();
@@ -21,7 +22,7 @@ const UpdateStoryModal = ({ setModalMode, data }) => {
   const setImageUrlRef = useRef();
   const deleteFromFirebase = (url) => {
     let pictureRef = ref(storage, url);
-    console.log(pictureRef);
+    // console.log(pictureRef);
     deleteObject(pictureRef)
       .then(() => {
         uploadFile();
@@ -51,7 +52,8 @@ const UpdateStoryModal = ({ setModalMode, data }) => {
   };
   const submitHandler = async () => {
     const newData = {
-      image: setImageUrlRef?.current,
+      image: setImageUrlRef?.current || data.image,
+      caption: captionRef.current?.value,
     };
     const res = await updateStory(newData, data._id);
     setModalMode("");
@@ -66,10 +68,17 @@ const UpdateStoryModal = ({ setModalMode, data }) => {
     setIsLoading(false);
   };
   const confirmHandler = () => {
-    if (hiddenFileInputRef.current.value == "") {
+    if (
+      hiddenFileInputRef.current.value == "" &&
+      data?.caption == captionRef.current?.value
+    ) {
       setModalMode("");
     } else {
-      deleteFromFirebase(data.image);
+      if (storyImage) {
+        deleteFromFirebase(data.image);
+      } else {
+        submitHandler();
+      }
     }
   };
   const buttons = () => {
@@ -118,12 +127,26 @@ const UpdateStoryModal = ({ setModalMode, data }) => {
             ref={hiddenFileInputRef}
             type="file"
             onChange={(e) => {
-              setStoryImage({
-                url: URL.createObjectURL(e.target.files[0]),
-                file: e.target.files[0],
-              });
+              try {
+                setStoryImage({
+                  url: URL?.createObjectURL(e.target?.files[0]),
+                  file: e.target?.files[0],
+                });
+              } catch (e) {
+                console.log(e);
+              }
             }}
             accept="image/*"
+          />
+        </div>
+        <div className="mt-4 flex border rounded-full w-full px-4 items-center">
+          <p className="font-semibold text-lg">Caption</p>
+          <input
+            ref={captionRef}
+            defaultValue={data?.caption}
+            type="text"
+            className="p-4 w-full "
+            placeholder="Enter here"
           />
         </div>
         {buttons()}

@@ -11,6 +11,7 @@ const ApprovedStory = () => {
   const { state } = useAppContext();
   const [data, setData] = useState();
   useEffect(() => {
+    console.log(state?.story);
     setData(state?.story?.filter((s) => s.status == "approved"));
   }, [state?.story]);
   return (

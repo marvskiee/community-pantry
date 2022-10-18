@@ -4,7 +4,7 @@ const ViewStoryCard = ({ data }) => {
   return (
     <div className="flex flex-col sm:gap-10 gap-5">
       {data && data?.length > 0 ? (
-        data.map(({ username, image, created_at }, index) => (
+        data.map(({ username, image, created_at, caption }, index) => (
           <div key={index} className="rounded-lg border bg-white sm:p-10 p-5 ">
             <div className="flex items-center justify-between mb-4">
               <p className="font-semibold text-lg">{username}</p>
@@ -15,6 +15,9 @@ const ViewStoryCard = ({ data }) => {
                 src={image}
                 className="w-full aspect-video object-cover  rounded-lg bg-slate-200"
               />
+              <p className="w-full font-semibold text-lg my-4">
+                Caption: {caption}
+              </p>
             </div>
           </div>
         ))

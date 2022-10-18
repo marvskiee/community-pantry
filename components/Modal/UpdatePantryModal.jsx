@@ -10,8 +10,9 @@ import { v4 } from "uuid";
 import { useAppContext } from "../../context/AppContext";
 import { storage } from "../../services/firebase";
 import { updatePantry, getPantry } from "../../services/pantry.services";
+import moment from "moment";
 
-const UpdatePantryModal = ({ setModalMode, data }) => {
+const UpdatePantryModal = ({ setModalMode, data, meOnly }) => {
   const [isLoading, setIsLoading] = useState();
   const { dispatch } = useAppContext();
   const [error, setError] = useState();
@@ -27,15 +28,18 @@ const UpdatePantryModal = ({ setModalMode, data }) => {
   const aboutUsRef = useRef();
   const addressRef = useRef();
   const contactRef = useRef();
-  const guidelineRef = useRef();
+  // const guidelineRef = useRef();
   const supplyNameRef = useRef();
   const readyDataRef = useRef();
+  const closingRef = useRef();
+  const openingRef = useRef();
+  const [hourError, setHourError] = useState(false);
 
   // STEP 2 UPDATE THE PANTRY IMAGE IF STATE IS CHANGED
   const updatePantryImage = () => {
     const imageRef = ref(storage, `images/${pantryImage.file.name + v4()}`);
     let pictureRef = ref(storage, data?.pantryImage);
-    console.log(data?.pantryImage);
+    // console.log(data?.pantryImage);
     deleteObject(pictureRef)
       .then(() => {})
       .catch((error) => {
@@ -76,7 +80,7 @@ const UpdatePantryModal = ({ setModalMode, data }) => {
               readyDataRef.current.supply = tmp;
               if (tmp.length == supplyList.length) {
                 finalHandler();
-                console.log("passed 2");
+                // console.log("passed 2");
               }
             })
             .catch((e) => {
@@ -90,7 +94,7 @@ const UpdatePantryModal = ({ setModalMode, data }) => {
         readyDataRef.current.supply = tmp;
         if (tmp.length == supplyList.length) {
           finalHandler();
-          console.log("passed 2");
+          // console.log("passed 2");
         }
       }
     }
@@ -102,24 +106,32 @@ const UpdatePantryModal = ({ setModalMode, data }) => {
       aboutUs: aboutUsRef.current?.value.trim(),
       address: addressRef.current?.value.trim(),
       contact: contactRef.current?.value.trim(),
-      guideline: guidelineRef.current?.value.trim(),
+      // guideline: guidelineRef.current?.value.trim(),
       pantryImage: readyDataRef.current.pantryImage,
       supply: readyDataRef.current.supply,
+
+      other: "",
       pantryImage: readyDataRef.current.pantryImage,
+      open: moment().format("YYYY-MM-DD ") + openingRef.current.value,
+      close: moment().format("YYYY-MM-DD ") + closingRef.current.value,
     };
+    if (meOnly) {
+      newData.status = "requested";
+      newData.reason = null;
+    }
     // console.log(newData);
     const { success, error } = await updatePantry(newData, data?._id);
     if (success) {
       deleteFromFirebase();
       setIsLoading(false);
       clearForm();
-      console.log("passed 3");
+      // console.log("passed 3");
 
       const pantry_res = await getPantry();
       if (pantry_res.success) {
         dispatch({ type: "SET_PANTRY", value: pantry_res.data });
         setModalMode("");
-        console.log("passed 4");
+        // console.log("passed 4");
       }
     } else {
       console.log(error);
@@ -157,9 +169,11 @@ const UpdatePantryModal = ({ setModalMode, data }) => {
       aboutUs: aboutUsRef.current.value.trim(),
       address: addressRef.current.value.trim(),
       contact: contactRef.current.value.trim(),
-      guideline: guidelineRef.current.value.trim(),
+      // guideline: guidelineRef.current.value.trim(),
+      closing: closingRef.current.value,
+      opening: openingRef.current.value,
     };
-    let { pantryName, aboutUs, address, contact, guideline } = newData;
+    let { pantryName, aboutUs, address, contact, opening, closing } = newData;
     console.log(pantryImage);
     console.log("check", supplyList);
 
@@ -168,8 +182,11 @@ const UpdatePantryModal = ({ setModalMode, data }) => {
       aboutUs.length > 0 &&
       address.length > 0 &&
       contact.length > 0 &&
-      guideline.length > 0 &&
-      supplyList.length > 0
+      // guideline.length > 0 &&
+      supplyList.length > 0 &&
+      closing != null &&
+      opening != null &&
+      !hourError
     ) {
       for (let list of supplyList) {
         if (list.image == null) {
@@ -195,7 +212,13 @@ const UpdatePantryModal = ({ setModalMode, data }) => {
     if (supplyNameRef.current.value.trim().length > 0) {
       setSupplyList([
         ...supplyList,
-        { image: null, name: supplyNameRef.current.value, quantity: 1 },
+        {
+          image: null,
+          name: supplyNameRef.current.value,
+          quantity: 1,
+          date_added: moment().format("YYYY-MM-DD"),
+          expiration_date: null,
+        },
       ]);
       supplyNameRef.current.value = "";
     }
@@ -224,6 +247,20 @@ const UpdatePantryModal = ({ setModalMode, data }) => {
     console.log(index);
     supplyImageIndexRef.current = index;
     hiddenSupplyImageRef.current?.click();
+  };
+  const expirationHandler = (index, value) => {
+    let clone = supplyList;
+    clone[index].expiration_date = value;
+    setSupplyList([...clone]);
+  };
+  const hourHandler = () => {
+    let open = parseInt(openingRef.current?.value.replace(":", ""));
+    let close = parseInt(closingRef.current?.value.replace(":", ""));
+    if (close <= open) {
+      setHourError(true);
+    } else {
+      setHourError(false);
+    }
   };
   const pantryUI = () => {
     return (
@@ -289,12 +326,43 @@ const UpdatePantryModal = ({ setModalMode, data }) => {
           defaultValue={data?.contact}
           ref={contactRef}
         />
-        <textarea
+        <div className="rounded-3xl border p-4">
+          {hourError && (
+            <p className="py-2 text-rose-500 font-semibold">Invalid time!</p>
+          )}
+          <label className="text-center text-slate-400 w-full">
+            Opening and Closing hours
+          </label>
+          <div className="flex my-2 items-center justify-around">
+            <input
+              ref={openingRef}
+              className="rounded-full px-4 py-3 border"
+              placeholder="Contact Information"
+              type="time"
+              defaultValue={moment(data?.open).format("HH:MM")}
+              onChange={() => {
+                hourHandler();
+              }}
+            />
+            <input
+              ref={closingRef}
+              min={openingRef.current?.value}
+              className="rounded-full px-4 py-3 border"
+              placeholder="Contact Information"
+              type="time"
+              defaultValue={moment(data?.close).format("HH:MM")}
+              onChange={() => {
+                hourHandler();
+              }}
+            />
+          </div>
+        </div>
+        {/* <textarea
           className="rounded-full px-4 py-3 border"
           placeholder="Pantry Guidelines"
           defaultValue={data?.guideline}
           ref={guidelineRef}
-        />
+        /> */}
         <div className="flex gap-4 items-center justify-end">
           <input
             className="w-full rounded-full px-4 py-3 border"
@@ -312,68 +380,88 @@ const UpdatePantryModal = ({ setModalMode, data }) => {
           )}
         </div>
         <div className="flex gap-2 flex-col">
-          {supplyList.map(({ name, quantity, image, _id }, index) => (
-            <div
-              key={_id || index}
-              className="flex items-center justify-between"
-            >
-              <input
-                ref={hiddenSupplyImageRef}
-                type="file"
-                className="hidden"
-                onChange={(e) => {
-                  console.log(supplyImageIndexRef.current);
-                  let clone = supplyList;
-                  clone[supplyImageIndexRef.current].image = {
-                    url: URL.createObjectURL(e.target.files[0]),
-                    file: e.target.files[0],
-                  };
-                  console.log(clone);
-                  setSupplyList([...clone]);
-                }}
-                accept="image/*"
-              />
-              <div
-                onClick={() => supplyImageHandler(index)}
-                className="overflow-hidden relative w-14 flex items-center justify-center rounded-lg cursor-pointer aspect-square bg-slate-200 text-sm"
-              >
-                <p className="text-center text-xs z-10 text-white bg-slate-900/40 flex items-center justify-center font-semibold h-full w-full">
-                  Pick Image
-                </p>
-                {(image || image?.url) && (
-                  <img
-                    src={image?.url || image}
-                    className="absolute w-full h-full top-0 left-0"
-                    alt="supply image"
+          {supplyList.map(
+            (
+              { name, quantity, image, _id, date_added, expiration_date },
+              index
+            ) => (
+              <div className="rounded-3xl border p-4" key={_id || index}>
+                <div className="flex items-center justify-between">
+                  <input
+                    ref={hiddenSupplyImageRef}
+                    type="file"
+                    className="hidden"
+                    onChange={(e) => {
+                      console.log(supplyImageIndexRef.current);
+                      let clone = supplyList;
+                      clone[supplyImageIndexRef.current].image = {
+                        url: URL.createObjectURL(e.target.files[0]),
+                        file: e.target.files[0],
+                      };
+                      console.log(clone);
+                      setSupplyList([...clone]);
+                    }}
+                    accept="image/*"
                   />
-                )}
-              </div>
-              <p>{name}</p>
-              {!isLoading && (
-                <div className="flex items-center gap-2">
-                  <button
-                    onClick={() => quantityHandler("increment", index)}
-                    className="p-2 w-10 rounded-full bg-emerald-500 text-white"
+                  <div
+                    onClick={() => supplyImageHandler(index)}
+                    className="overflow-hidden relative w-14 flex items-center justify-center rounded-lg cursor-pointer aspect-square bg-slate-200 text-sm"
                   >
-                    +
-                  </button>
-                  <p>{quantity}</p>
-                  <button
-                    onClick={() => quantityHandler("decrement", index)}
-                    className="p-2 w-10 rounded-full bg-slate-900 text-white"
-                  >
-                    -
-                  </button>
-                  <button
-                    onClick={() => removeHandler(index)}
-                    className="p-2 w-10 rounded-full bg-rose-600 text-white"
-                  >
-                    x
-                  </button>
+                    <p className="text-center text-xs z-10 text-white bg-slate-900/40 flex items-center justify-center font-semibold h-full w-full">
+                      Pick Image
+                    </p>
+                    {(image || image?.url) && (
+                      <img
+                        src={image?.url || image}
+                        className="absolute w-full h-full top-0 left-0"
+                        alt="supply image"
+                      />
+                    )}
+                  </div>
+                  <p>{name}</p>
+                  {!isLoading && (
+                    <div className="flex items-center gap-2">
+                      <button
+                        onClick={() => quantityHandler("increment", index)}
+                        className="p-2 w-10 rounded-full bg-emerald-500 text-white"
+                      >
+                        +
+                      </button>
+                      <p>{quantity}</p>
+                      <button
+                        onClick={() => quantityHandler("decrement", index)}
+                        className="p-2 w-10 rounded-full bg-slate-900 text-white"
+                      >
+                        -
+                      </button>
+                      <button
+                        onClick={() => removeHandler(index)}
+                        className="p-2 w-10 rounded-full bg-rose-600 text-white"
+                      >
+                        x
+                      </button>
+                    </div>
+                  )}
                 </div>
-              )}
-            </div>
-          ))}
+
+                <div>
+                  <p className="p-2">Expiration Date</p>
+                  <input
+                    className="w-full rounded-full px-4 py-3 border"
+                    type="date"
+                    defaultValue={
+                      expiration_date &&
+                      moment(expiration_date).format("YYYY-MM-DD")
+                    }
+                    onChange={(e) => expirationHandler(index, e.target.value)}
+                  />
+                </div>
+                <p className="p-2">
+                  Date added: {moment(date_added).format("MMM DD YYYY")}
+                </p>
+              </div>
+            )
+          )}
         </div>
 
         <div className="flex gap-4 justify-end">

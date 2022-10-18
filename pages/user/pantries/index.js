@@ -13,6 +13,7 @@ import React, { useState, useRef, useEffect } from "react";
 import { addPantry } from "../../../services/pantry.services";
 import { useAppContext } from "../../../context/AppContext";
 import Link from "next/link";
+import moment from "moment";
 const Home = () => {
   const [modal, setModal] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -83,17 +84,19 @@ const Home = () => {
       aboutUs: aboutUsRef.current?.value.trim(),
       address: addressRef.current?.value.trim(),
       contact: contactRef.current?.value.trim(),
-      guideline: guidelineRef.current?.value.trim(),
+
+      // guideline: guidelineRef.current?.value.trim(),
       status: "pending",
-      supply: readyDataRef.current.supply,
-      pantryImage: readyDataRef.current.pantryImage,
+      supply: readyDataRef.current?.supply,
+      pantryImage: readyDataRef.current?.pantryImage,
+      open: moment().format("YYYY-MM-DD ") + openingRef.current.value,
+      close: moment().format("YYYY-MM-DD ") + closingRef.current.value,
     };
-    // console.log(newData);
+    console.log(newData);
     const { success, error } = await addPantry(newData);
     if (success) {
       setIsLoading(false);
       clearForm();
-      // console.log(newData);
     } else {
       console.log(error);
     }
@@ -111,17 +114,23 @@ const Home = () => {
       aboutUs: aboutUsRef.current.value.trim(),
       address: addressRef.current.value.trim(),
       contact: contactRef.current.value.trim(),
-      guideline: guidelineRef.current.value.trim(),
+      closing: closingRef.current.value,
+      opening: openingRef.current.value,
+
+      // guideline: guidelineRef.current.value.trim(),
     };
-    let { pantryName, aboutUs, address, contact, guideline } = newData;
+    let { pantryName, aboutUs, address, contact, opening, closing } = newData;
     if (
       pantryImage != null &&
       pantryName.length > 0 &&
       aboutUs.length > 0 &&
       address.length > 0 &&
       contact.length > 0 &&
-      guideline.length > 0 &&
-      supplyList.length > 0
+      // guideline.length > 0 &&
+      supplyList.length > 0 &&
+      closing != null &&
+      opening != null &&
+      !hourError
     ) {
       for (let list of supplyList) {
         if (list.image == null) {
@@ -141,7 +150,7 @@ const Home = () => {
   const aboutUsRef = useRef();
   const addressRef = useRef();
   const contactRef = useRef();
-  const guidelineRef = useRef();
+  // const guidelineRef = useRef();
   const supplyNameRef = useRef();
 
   const [supplyList, setSupplyList] = useState([]);
@@ -150,17 +159,29 @@ const Home = () => {
   const [pantryImage, setPantryImage] = useState(null);
   const supplyImageIndexRef = useRef();
   const readyDataRef = useRef();
-
+  const closingRef = useRef();
+  const openingRef = useRef();
+  const [hourError, setHourError] = useState(false);
   const [viewMoreData, setViewMoreData] = useState(null);
-
   const supplyHandler = () => {
     if (supplyNameRef.current.value.trim().length > 0) {
       setSupplyList([
         ...supplyList,
-        { image: null, name: supplyNameRef.current.value, quantity: 1 },
+        {
+          image: null,
+          name: supplyNameRef.current.value,
+          quantity: 1,
+          date_added: moment().format("YYYY-MM-DD"),
+          expiration_date: null,
+        },
       ]);
       supplyNameRef.current.value = "";
     }
+  };
+  const expirationHandler = (index, value) => {
+    let clone = supplyList;
+    clone[index].expiration_date = value;
+    setSupplyList([...clone]);
   };
   const quantityHandler = (action, index) => {
     let clone = supplyList;
@@ -181,6 +202,15 @@ const Home = () => {
   const supplyImageHandler = (index) => {
     supplyImageIndexRef.current = index;
     hiddenSupplyImageRef.current.click();
+  };
+  const hourHandler = () => {
+    let open = parseInt(openingRef.current?.value.replace(":", ""));
+    let close = parseInt(closingRef.current?.value.replace(":", ""));
+    if (close <= open) {
+      setHourError(true);
+    } else {
+      setHourError(false);
+    }
   };
   const addPantryUI = () => {
     return (
@@ -230,7 +260,7 @@ const Home = () => {
         />
         <textarea
           className="rounded-full px-4 py-3 border"
-          placeholder="About us"
+          placeholder="Rules and Regulations"
           ref={aboutUsRef}
         />
         <textarea
@@ -244,11 +274,40 @@ const Home = () => {
           type="number"
           ref={contactRef}
         />
-        <textarea
+        <div className="rounded-3xl border p-4">
+          {hourError && (
+            <p className="py-2 text-rose-500 font-semibold">Invalid time!</p>
+          )}
+          <label className="text-center text-slate-400 w-full">
+            Opening and Closing hours
+          </label>
+          <div className="flex my-2 items-center justify-around">
+            <input
+              ref={openingRef}
+              className="rounded-full px-4 py-3 border"
+              placeholder="Contact Information"
+              type="time"
+              onChange={() => {
+                hourHandler();
+              }}
+            />
+            <input
+              ref={closingRef}
+              min={openingRef.current?.value}
+              className="rounded-full px-4 py-3 border"
+              placeholder="Contact Information"
+              type="time"
+              onChange={() => {
+                hourHandler();
+              }}
+            />
+          </div>
+        </div>
+        {/* <textarea
           className="rounded-full px-4 py-3 border"
           placeholder="Pantry Guidelines"
           ref={guidelineRef}
-        />
+        /> */}
         <div className="flex gap-4 items-center justify-end">
           <input
             className="w-full rounded-full px-4 py-3 border"
@@ -267,62 +326,80 @@ const Home = () => {
         </div>
         <div className="flex gap-2 flex-col">
           {supplyList.map(({ name, quantity, image }, index) => (
-            <div key={index} className="flex items-center justify-between">
-              <input
-                ref={hiddenSupplyImageRef}
-                type="file"
-                className="hidden"
-                onChange={(e) => {
-                  console.log(supplyImageIndexRef.current);
-                  let clone = supplyList;
-                  clone[supplyImageIndexRef.current].image = {
-                    url: URL.createObjectURL(e.target.files[0]),
-                    file: e.target.files[0],
-                  };
-                  console.log(clone);
-                  setSupplyList([...clone]);
-                }}
-                accept="image/*"
-              />
-              <div
-                onClick={() => supplyImageHandler(index)}
-                className="overflow-hidden relative w-14 flex items-center justify-center rounded-lg cursor-pointer aspect-square bg-slate-200 text-sm"
-              >
-                <p className="text-center text-xs z-10 text-white bg-slate-900/40 flex items-center justify-center font-semibold h-full w-full">
-                  Pick Image
-                </p>
-                {image && (
-                  <img
-                    src={image?.url}
-                    className="absolute w-full h-full top-0 left-0"
-                    alt="supply image"
-                  />
+            <div className="rounded-3xl border p-4" key={index}>
+              <div className="flex items-center justify-between">
+                <input
+                  ref={hiddenSupplyImageRef}
+                  type="file"
+                  className="hidden"
+                  onChange={(e) => {
+                    try {
+                      console.log(supplyImageIndexRef.current);
+                      let clone = supplyList;
+                      clone[supplyImageIndexRef.current].image = {
+                        url: URL.createObjectURL(e.target.files[0]),
+                        file: e.target.files[0],
+                      };
+                      console.log(clone);
+                      setSupplyList([...clone]);
+                    } catch (e) {
+                      console.log(e);
+                    }
+                  }}
+                  accept="image/*"
+                />
+                <div
+                  onClick={() => supplyImageHandler(index)}
+                  className="overflow-hidden relative w-14 flex items-center justify-center rounded-lg cursor-pointer aspect-square bg-slate-200 text-sm"
+                >
+                  <p className="text-center text-xs z-10 text-white bg-slate-900/40 flex items-center justify-center font-semibold h-full w-full">
+                    Pick Image
+                  </p>
+                  {image && (
+                    <img
+                      src={image?.url}
+                      className="absolute w-full h-full top-0 left-0"
+                      alt="supply image"
+                    />
+                  )}
+                </div>
+                <p>{name}</p>
+
+                {!isLoading && (
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={() => quantityHandler("increment", index)}
+                      className="p-2 w-10 rounded-full bg-emerald-500 text-white"
+                    >
+                      +
+                    </button>
+                    <p>{quantity}</p>
+                    <button
+                      onClick={() => quantityHandler("decrement", index)}
+                      className="p-2 w-10 rounded-full bg-slate-900 text-white"
+                    >
+                      -
+                    </button>
+                    <button
+                      onClick={() => removeHandler(index)}
+                      className="p-2 w-10 rounded-full bg-rose-600 text-white"
+                    >
+                      x
+                    </button>
+                  </div>
                 )}
               </div>
-              <p>{name}</p>
-              {!isLoading && (
-                <div className="flex items-center gap-2">
-                  <button
-                    onClick={() => quantityHandler("increment", index)}
-                    className="p-2 w-10 rounded-full bg-emerald-500 text-white"
-                  >
-                    +
-                  </button>
-                  <p>{quantity}</p>
-                  <button
-                    onClick={() => quantityHandler("decrement", index)}
-                    className="p-2 w-10 rounded-full bg-slate-900 text-white"
-                  >
-                    -
-                  </button>
-                  <button
-                    onClick={() => removeHandler(index)}
-                    className="p-2 w-10 rounded-full bg-rose-600 text-white"
-                  >
-                    x
-                  </button>
-                </div>
-              )}
+              <div>
+                <p className="p-2">Expiration Date</p>
+                <input
+                  className="w-full rounded-full px-4 py-3 border"
+                  type="date"
+                  onChange={(e) => expirationHandler(index, e.target.value)}
+                />
+              </div>
+              <p className="p-2">
+                Date added: {moment().format("MMM DD YYYY")}
+              </p>
             </div>
           ))}
         </div>
@@ -375,6 +452,21 @@ const Home = () => {
       </div>
     );
   };
+  const [search, setSearch] = useState("");
+  const searchSupplyHelper = (sup) => {
+    for (let i = 0; i < sup.length; i++) {
+      if (sup[i].name.toLowerCase().includes(search.toLowerCase())) {
+        return true;
+      }
+    }
+    return false;
+  };
+  const searchData = data?.filter(
+    (item) =>
+      item.pantryName.toLowerCase().includes(search.toLowerCase()) ||
+      searchSupplyHelper(item.supply) ||
+      item.address.toLowerCase().includes(search.toLowerCase())
+  );
   return (
     <div>
       {viewMoreData && (
@@ -390,7 +482,36 @@ const Home = () => {
       <div className="flex">
         <SideBar />
         <UserWrapperLayout title="Pantries" buttons={buttons}>
-          <ViewPantryCard data={data} setViewMoreModal={setViewMoreData} />
+          <div className="flex items-center justify-between">
+            <div className="flex w-full relative">
+              <input
+                type="text"
+                onChange={(e) => {
+                  setSearch(e.target.value);
+                }}
+                value={search}
+                placeholder="Search food, pantry name or location "
+                className="w-full rounded-full p-4 mt-2 mb-4"
+              />
+              {search.length > 0 && (
+                <span
+                  onClick={() => setSearch("")}
+                  className="cursor-pointer right-0 top-2 p-4 absolute"
+                >
+                  Clear
+                </span>
+              )}
+            </div>
+          </div>
+          {search.length > 0 && (
+            <p className="font-semibold mb-4">
+              Search result found: {searchData.length}
+            </p>
+          )}
+          <ViewPantryCard
+            data={searchData}
+            setViewMoreModal={setViewMoreData}
+          />
         </UserWrapperLayout>
       </div>
     </div>

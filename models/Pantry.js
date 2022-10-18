@@ -29,10 +29,10 @@ const PantrySchema = new mongoose.Schema({
     type: String,
     required: [true, "Please fill up this field"],
   },
-  guideline: {
-    type: String,
-    required: [true, "Please fill up this field"],
-  },
+  // guideline: {
+  //   type: String,
+  //   required: [true, "Please fill up this field"],
+  // },
   status: {
     type: String,
     required: [true, "Please fill up this field"],
@@ -43,9 +43,30 @@ const PantrySchema = new mongoose.Schema({
         quantity: { type: Number },
         name: { type: String },
         image: { type: String },
+        date_added: { type: Date },
+        expiration_date: { type: Date },
       },
     ],
     required: [true, "Please fill up this field"],
+  },
+  reason: {
+    type: {
+      r1: { type: Boolean },
+      r2: { type: Boolean },
+      r3: { type: Boolean },
+      r4: { type: Boolean },
+      other: { type: String },
+      deleted_by: { type: String },
+    },
+  },
+  open: {
+    type: Date,
+  },
+  close: {
+    type: Date,
+  },
+  expiration: {
+    type: Date,
   },
   created_at: {
     type: Date,

@@ -18,6 +18,7 @@ const MyStory = () => {
   const hiddenFileInputRef = useRef(null);
   const [story, setStory] = useState([]);
   const setImageUrlRef = useRef();
+  const captionRef = useRef();
   const uploadFile = () => {
     setIsLoading(true);
     if (storyImage?.file == null) {
@@ -41,10 +42,12 @@ const MyStory = () => {
       user_id: state?.user?._id,
       username: state?.user?.username,
       image: setImageUrlRef?.current,
+      caption: captionRef.current?.value,
       status: "pending",
     };
     setIsLoading(false);
     setStoryImage(null);
+    captionRef.current.value = "";
     console.log(newData);
     const res = await addStory(newData);
     console.log(res);
@@ -84,13 +87,25 @@ const MyStory = () => {
                 ref={hiddenFileInputRef}
                 type="file"
                 onChange={(e) => {
-                  setStoryImage({
-                    url: URL.createObjectURL(e.target.files[0]),
-                    file: e.target.files[0],
-                  });
-                  // console.log(e.target.files[0])
+                  try {
+                    setStoryImage({
+                      url: URL?.createObjectURL(e.target?.files[0]),
+                      file: e.target?.files[0],
+                    });
+                  } catch (e) {
+                    console.log(e);
+                  }
                 }}
                 accept="image/*"
+              />
+            </div>
+            <div className="flex border rounded-full w-full px-4 items-center">
+              <p className="font-semibold text-lg">Caption</p>
+              <input
+                ref={captionRef}
+                type="text"
+                className="p-4 w-full"
+                placeholder="Enter here"
               />
             </div>
             {isLoading ? (

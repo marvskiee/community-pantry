@@ -3,6 +3,7 @@ export const initialState = {
   isLoading: false,
   pantry: null,
   story: null,
+  guidelines: null,
 };
 
 export const AppReducer = (state, action) => {
@@ -26,6 +27,11 @@ export const AppReducer = (state, action) => {
       return {
         ...state,
         story: action.value,
+      };
+    case "SET_GUIDELINE":
+      return {
+        ...state,
+        guidelines: action.value,
       };
   }
 };

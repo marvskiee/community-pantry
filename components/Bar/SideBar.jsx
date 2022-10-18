@@ -6,6 +6,7 @@ import { useAppContext } from "../../context/AppContext";
 import { authLogout, getUser } from "../../services/user.services";
 import { getPantry } from "../../services/pantry.services";
 import { getStory } from "../../services/story.services";
+import { getGuidelines } from "../../services/guideline.services";
 
 const SideBar = () => {
   const router = useRouter();
@@ -25,6 +26,10 @@ const SideBar = () => {
           const story_res = await getStory();
           if (story_res.success) {
             dispatch({ type: "SET_STORY", value: story_res.data });
+          }
+          const guideline_res = await getGuidelines();
+          if (guideline_res.success) {
+            dispatch({ type: "SET_GUIDELINE", value: guideline_res.data });
           }
         } else {
           router.push("/login");
@@ -88,6 +93,14 @@ const SideBar = () => {
       name: "Deleted Story",
       link: "/admin/deleted_story",
     },
+    {
+      name: "Request",
+      link: "/admin/request",
+    },
+    {
+      name: "Guidelines",
+      link: "/admin/guidelines",
+    },
   ];
   const signOutHandler = async () => {
     const { success } = await authLogout();
@@ -97,7 +110,7 @@ const SideBar = () => {
     router.push("/login");
   };
   return (
-    <div className="max-h-sidebar min-h-screen py-10  overflow-y-auto scroll-smooth bg-emerald-600 flex flex-col lg:max-w-xs max-w-min justify-between">
+    <div className="top-0 sticky max-h-sidebar min-h-screen py-10  overflow-y-auto scroll-smooth bg-emerald-600 flex flex-col lg:max-w-xs max-w-min justify-between">
       <div className="flex items-center justify-center flex-col">
         {/* <button
           onClick={() => setHidden(!hidden)}

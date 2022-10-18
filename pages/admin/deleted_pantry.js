@@ -19,7 +19,7 @@ const DeletedPantry = () => {
       <div className="flex">
         <SideBar />
         <AdminWrapperLayout title="Deleted Pantry">
-          <ModifyPantryCard data={data} status="deleted" />
+          <ModifyPantryCard data={data} status="deleted" deleted={true} />
         </AdminWrapperLayout>
       </div>
     </div>

@@ -19,7 +19,7 @@ const ForApprovalStory = () => {
       <div className="flex">
         <SideBar />
         <AdminWrapperLayout title="For Approval Story">
-          <ModifyStoryCard data={data} status="pending" />
+          <ModifyStoryCard data={data} status="pending" declineIcon={true} />
         </AdminWrapperLayout>
       </div>
     </div>
