@@ -15,6 +15,8 @@ import { useAppContext } from "../../../context/AppContext";
 import Link from "next/link";
 import moment from "moment";
 const Home = () => {
+  const [agreement, setAgreement] = useState(false);
+  const [termsModal, setTermsModal] = useState(false);
   const [modal, setModal] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -438,7 +440,8 @@ const Home = () => {
         <button
           onClick={() => {
             modalModeRef.current = "add_pantry";
-            setModal(true);
+            setTermsModal(true);
+            // setModal(true);
           }}
           className="rounded-full p-3 px-8 hover:bg-emerald-700 bg-emerald-600 transition-colors text-white"
         >
@@ -467,6 +470,76 @@ const Home = () => {
       searchSupplyHelper(item.supply) ||
       item.address.toLowerCase().includes(search.toLowerCase())
   );
+  const termsUI = () => {
+    return (
+      <div className="p-2 flex-col flex gap-4">
+        <p className="font-semibold text-xl">Terms and conditions</p>
+        <p className="my-4 max-h-modal">
+          Sed ut perspiciatis unde omnis iste natus error sit voluptatem
+          accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae
+          ab illo inventore veritatis et quasi architecto beatae vitae dicta
+          sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit
+          aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos
+          qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui
+          dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed
+          quia non numquam eius modi tempora incidunt ut labore et dolore magnam
+          aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum
+          exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex
+          ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in
+          ea voluptate velit esse quam nihil molestiae consequatur, vel illum
+          qui dolorem eum fugiat quo voluptas nulla pariatur? Sed ut
+          perspiciatis unde omnis iste natus error sit voluptatem accusantium
+          doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo
+          inventore veritatis et quasi architecto beatae vitae dicta sunt
+          explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut
+          odit aut fugit, sed quia consequuntur magni dolores eos qui ratione
+          voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum
+          quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam
+          eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat
+          voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem
+          ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi
+          consequatur? Quis autem vel eum iure reprehenderit qui in ea voluptate
+          velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum
+          fugiat quo voluptas nulla pariatur?
+        </p>
+        <div className="flex gap-2 justify-center">
+          <input
+            id="terms"
+            type="checkbox"
+            onChange={() => setAgreement(!agreement)}
+          />
+          <label htmlFor="terms">I agree to the terms and conditions</label>
+        </div>
+        <div className="flex gap-4 justify-center">
+          {agreement ? (
+            <button
+              className="rounded-full p-3 px-8 hover:bg-emerald-700 bg-emerald-600 transition-colors text-white"
+              onClick={() => {
+                setModal(true);
+                setTermsModal(false);
+                setAgreement(false);
+              }}
+            >
+              Accept
+            </button>
+          ) : (
+            <p className="rounded-full p-3 px-8 text-center bg-emerald-300 transition-colors text-white">
+              Accept
+            </p>
+          )}
+          <button
+            className="p-3 px-8 bg-slate-400 transition-colors hover:bg-emerald-700 text-white rounded-full "
+            onClick={() => {
+              setAgreement(false);
+              setTermsModal(false);
+            }}
+          >
+            Close
+          </button>
+        </div>
+      </div>
+    );
+  };
   return (
     <div>
       {viewMoreData && (
@@ -477,6 +550,7 @@ const Home = () => {
           />
         </ModalLayout>
       )}
+      {termsModal && <ModalLayout>{termsUI()}</ModalLayout>}
       {modal && <ModalLayout>{addPantryUI()}</ModalLayout>}
       <HeaderLayout title="Pantries" />
       <div className="flex">

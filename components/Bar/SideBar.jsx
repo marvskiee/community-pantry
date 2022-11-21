@@ -7,6 +7,7 @@ import { authLogout, getUser } from "../../services/user.services";
 import { getPantry } from "../../services/pantry.services";
 import { getStory } from "../../services/story.services";
 import { getGuidelines } from "../../services/guideline.services";
+import { getMetadata } from "../../services/metadata.services";
 
 const SideBar = () => {
   const router = useRouter();
@@ -30,6 +31,13 @@ const SideBar = () => {
           const guideline_res = await getGuidelines();
           if (guideline_res.success) {
             dispatch({ type: "SET_GUIDELINE", value: guideline_res.data });
+          }
+          const metadata_res = await getMetadata();
+          if (metadata_res.success) {
+            dispatch({
+              type: "SET_METADATA",
+              value: metadata_res.data,
+            });
           }
         } else {
           router.push("/login");
@@ -100,6 +108,10 @@ const SideBar = () => {
     {
       name: "Guidelines",
       link: "/admin/guidelines",
+    },
+    {
+      name: "Reports",
+      link: "/admin/reports",
     },
   ];
   const signOutHandler = async () => {

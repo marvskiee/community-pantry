@@ -6,12 +6,19 @@ import {
 } from "../../components";
 import { useEffect, useState } from "react";
 import { useAppContext } from "../../context/AppContext";
-
+import { resonsForDeletion } from "../../services/reason.services";
 const DeletedPantry = () => {
   const { state } = useAppContext();
   const [data, setData] = useState();
   useEffect(() => {
-    setData(state?.pantry?.filter((p) => p.status == "deleted"));
+    setData(
+      state?.pantry?.filter(
+        (p) =>
+          p.status == "deleted" ||
+          p.status == "not approved" ||
+          p.status == "request not approved"
+      )
+    );
   }, [state?.pantry]);
   return (
     <div>

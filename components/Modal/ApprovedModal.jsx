@@ -3,18 +3,46 @@ import { updatePantry, getPantry } from "../../services/pantry.services";
 import ModalLayout from "../Layout/ModalLayout";
 import { useAppContext } from "../../context/AppContext";
 import { updateStory, getStory } from "../../services/story.services";
+import { getMetadata, newMetadata } from "../../services/metadata.services";
 
-const ApprovedModal = ({ setModalMode, data, type }) => {
+const ApprovedModal = ({ setModalMode, data, type, approved }) => {
   const { dispatch } = useAppContext();
   const [isLoading, setIsLoading] = useState();
 
+  const metadataHandler = async () => {
+    const newData = {
+      expiredCount: data.expiredCount,
+      distributedCount: data.distributedCount,
+    };
+    const res = await newMetadata(newData);
+    console.log(res, newData);
+    const metadata_res = await getMetadata();
+    if (metadata_res.success) {
+      dispatch({
+        type: "SET_METADATA",
+        value: metadata_res.data,
+      });
+    }
+  };
   const confirmHandler = async () => {
+    if (approved) {
+      metadataHandler();
+    }
     setIsLoading(true);
-
+    console.log(data);
     if (type == "pantry") {
-      const newData = {
-        status: "approved",
-      };
+      let newData = null;
+      if (approved) {
+        newData = {
+          status: "approved",
+          expirationCount: 0,
+          distributedCount: 0,
+        };
+      } else {
+        newData = {
+          status: "approved",
+        };
+      }
       const { success } = await updatePantry(newData, data.id);
       if (success) {
         const pantry_res = await getPantry();

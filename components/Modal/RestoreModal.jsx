@@ -12,6 +12,7 @@ const RestoreModal = ({ setModalMode, data, type }) => {
     if (type == "pantry") {
       const newData = {
         status: "pending",
+        reason: null,
       };
       const { success, error } = await updatePantry(newData, data.id);
       if (success) {

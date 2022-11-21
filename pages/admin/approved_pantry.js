@@ -19,6 +19,15 @@ const ApprovedPantry = () => {
       <div className="flex">
         <SideBar />
         <AdminWrapperLayout title="Approved Pantry">
+          <div className="mb-4 flex justify-end">
+            <a
+              href="/clearance.docx"
+              target="_blank"
+              className="py-3 p-8 rounded-md bg-emerald-500 text-white"
+            >
+              Download Clearance
+            </a>
+          </div>
           <ModifyPantryCard data={data} status="approved" />
         </AdminWrapperLayout>
       </div>

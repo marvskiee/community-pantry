@@ -4,6 +4,7 @@ export const initialState = {
   pantry: null,
   story: null,
   guidelines: null,
+  metadata: null,
 };
 
 export const AppReducer = (state, action) => {
@@ -32,6 +33,11 @@ export const AppReducer = (state, action) => {
       return {
         ...state,
         guidelines: action.value,
+      };
+    case "SET_METADATA":
+      return {
+        ...state,
+        metadata: action.value,
       };
   }
 };

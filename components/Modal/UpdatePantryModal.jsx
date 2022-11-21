@@ -13,6 +13,7 @@ import { updatePantry, getPantry } from "../../services/pantry.services";
 import moment from "moment";
 
 const UpdatePantryModal = ({ setModalMode, data, meOnly }) => {
+  console.log(data);
   const [isLoading, setIsLoading] = useState();
   const { dispatch } = useAppContext();
   const [error, setError] = useState();
@@ -33,6 +34,9 @@ const UpdatePantryModal = ({ setModalMode, data, meOnly }) => {
   const readyDataRef = useRef();
   const closingRef = useRef();
   const openingRef = useRef();
+  const distributedRef = useRef(0);
+  const expiredRef = useRef(0);
+
   const [hourError, setHourError] = useState(false);
 
   // STEP 2 UPDATE THE PANTRY IMAGE IF STATE IS CHANGED
@@ -114,6 +118,8 @@ const UpdatePantryModal = ({ setModalMode, data, meOnly }) => {
       pantryImage: readyDataRef.current.pantryImage,
       open: moment().format("YYYY-MM-DD ") + openingRef.current.value,
       close: moment().format("YYYY-MM-DD ") + closingRef.current.value,
+      expirationCount: expiredRef.current?.value,
+      distributedCount: distributedRef.current?.value,
     };
     if (meOnly) {
       newData.status = "requested";
@@ -172,8 +178,19 @@ const UpdatePantryModal = ({ setModalMode, data, meOnly }) => {
       // guideline: guidelineRef.current.value.trim(),
       closing: closingRef.current.value,
       opening: openingRef.current.value,
+      expirationCount: expiredRef.current.value,
+      distributedCount: distributedRef.current.value,
     };
-    let { pantryName, aboutUs, address, contact, opening, closing } = newData;
+    let {
+      pantryName,
+      aboutUs,
+      expirationCount,
+      distributedCount,
+      address,
+      contact,
+      opening,
+      closing,
+    } = newData;
     console.log(pantryImage);
     console.log("check", supplyList);
 
@@ -186,6 +203,8 @@ const UpdatePantryModal = ({ setModalMode, data, meOnly }) => {
       supplyList.length > 0 &&
       closing != null &&
       opening != null &&
+      expirationCount > -1 &&
+      distributedCount > -1 &&
       !hourError
     ) {
       for (let list of supplyList) {
@@ -462,6 +481,32 @@ const UpdatePantryModal = ({ setModalMode, data, meOnly }) => {
               </div>
             )
           )}
+        </div>
+        <div className="w-full rounded-3xl border p-4 flex-col flex gap-4">
+          <label className="text-center text-slate-400 w-full">
+            Distributed Supplies
+          </label>
+          <input
+            className="rounded-full px-4 py-3 border"
+            placeholder="0"
+            type="number"
+            min={0}
+            defaultValue={data?.distributedCount}
+            ref={distributedRef}
+          />
+        </div>
+        <div className="w-full rounded-3xl border p-4 flex-col flex gap-4">
+          <label className="text-center text-slate-400 w-full">
+            Expired Supplies
+          </label>
+          <input
+            className="rounded-full px-4 py-3 border"
+            placeholder="0"
+            type="number"
+            min={0}
+            defaultValue={data?.expirationCount}
+            ref={expiredRef}
+          />
         </div>
 
         <div className="flex gap-4 justify-end">

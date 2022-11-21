@@ -6,7 +6,7 @@ import {
   AdminWrapperLayout,
 } from "../../components";
 import { useAppContext } from "../../context/AppContext";
-
+import { resonsForNotApprovingRequest } from "../../services/reason.services";
 const Request = () => {
   const { state } = useAppContext();
   const [data, setData] = useState();
@@ -19,7 +19,7 @@ const Request = () => {
       <div className="flex">
         <SideBar />
         <AdminWrapperLayout title="Request for changes">
-          <ModifyPantryCard data={data} status="pending" />
+          <ModifyPantryCard data={data} status="request" approved={true} />
         </AdminWrapperLayout>
       </div>
     </div>

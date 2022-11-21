@@ -3,9 +3,14 @@ import ModalLayout from "../Layout/ModalLayout";
 import { updatePantry, getPantry } from "../../services/pantry.services";
 import { useAppContext } from "../../context/AppContext";
 import { updateStory, getStory } from "../../services/story.services";
-
-const DeletedModal = ({ setModalMode, data, type, meOnly, restrict }) => {
-  console.log(data);
+import {
+  reasonsForDeletion,
+  reasonsForNotApproving,
+  reasonsForNotApprovingRequest,
+} from "../../services/reason.services";
+const DeletedModal = ({ setModalMode, staticReason, data, type, meOnly }) => {
+  console.log(data.status);
+  const [decline, setDecline] = useState(reasonsForDeletion);
   const { dispatch } = useAppContext();
   const [isLoading, setIsLoading] = useState();
   const [reasons, setReasons] = useState({
@@ -17,17 +22,21 @@ const DeletedModal = ({ setModalMode, data, type, meOnly, restrict }) => {
   const otherRef = useRef();
   console.log(data);
   useEffect(() => {
-    // const tmp = data.reason;
-    // console.log(tmp);
-    // setReasons({
-    //   r1: tmp?.r1,
-    //   r2: tmp?.r2,
-    //   r3: tmp?.r3,
-    //   r4: tmp?.r4,
-    //   other: tmp?.other || "",
-    //   deleted_by: tmp?.deleted_by || "",
-    // });
-  });
+    if (!staticReason) {
+      if (
+        data?.status == "requested" ||
+        data?.status == "request not approved"
+      ) {
+        setDecline(reasonsForNotApprovingRequest);
+      }
+      if (data?.status == "approved" || data?.status == "deleted") {
+        setDecline(reasonsForDeletion);
+      }
+      if (data?.status == "pending" || data?.status == "not approved") {
+        setDecline(reasonsForNotApproving);
+      }
+    }
+  }, []);
   const confirmHandler = async () => {
     setIsLoading(true);
 
@@ -38,8 +47,14 @@ const DeletedModal = ({ setModalMode, data, type, meOnly, restrict }) => {
           other: otherRef.current.value,
           deleted_by: meOnly ? "user" : "admin",
         },
-        status: "deleted",
+        status:
+          !staticReason && data?.status == "requested"
+            ? "request not approved"
+            : !staticReason && data?.status == "pending"
+            ? "not approved"
+            : "deleted",
       };
+      console.log(newData);
       const { success } = await updatePantry(newData, data.id || data._id);
       if (success) {
         const pantry_res = await getPantry();
@@ -101,12 +116,6 @@ const DeletedModal = ({ setModalMode, data, type, meOnly, restrict }) => {
   const reasonHandler = (value) => {
     setReasons({ ...reasons, [value + ""]: !reasons[value] });
   };
-  const reasonings = [
-    { value: "r1", label: "Reason 1" },
-    { value: "r2", label: "Reason 2" },
-    { value: "r3", label: "Reason 3" },
-    { value: "r4", label: "Reason 4" },
-  ];
 
   const pantryType = () => {
     return (
@@ -124,9 +133,13 @@ const DeletedModal = ({ setModalMode, data, type, meOnly, restrict }) => {
           </div>
         ) : (
           <div>
-            {data?.status == "pending" ? (
+            {!staticReason && data?.status == "pending" ? (
               <p className="text-center text-lg font-semibold">
-                REASON FOR NOT APPROVED
+                REASON FOR NOT APPROVED OF PANTRY
+              </p>
+            ) : !staticReason && data?.status == "requested" ? (
+              <p className="text-center text-lg font-semibold">
+                REASON FOR NOT APPROVING REQUEST OF PANTRY
               </p>
             ) : (
               <p className="text-center text-lg font-semibold">
@@ -135,10 +148,14 @@ const DeletedModal = ({ setModalMode, data, type, meOnly, restrict }) => {
             )}
           </div>
         )}
-        {reasonings.map(({ value, label }, index) => (
+        {decline.map(({ value, label }, index) => (
           <div key={index} className="p-2 flex gap-4">
             <input
-              disabled={restrict}
+              disabled={
+                data?.status == "request not approved" ||
+                data?.status == "deleted" ||
+                data?.status == "not approved"
+              }
               onChange={() => reasonHandler(value)}
               id={value}
               type="checkbox"
@@ -149,7 +166,11 @@ const DeletedModal = ({ setModalMode, data, type, meOnly, restrict }) => {
           </div>
         ))}
         <textarea
-          disabled={restrict}
+          disabled={
+            data?.status == "request not approved" ||
+            data?.status == "deleted" ||
+            data?.status == "not approved"
+          }
           ref={otherRef}
           rows={5}
           defaultValue={data.reason?.other}
@@ -161,16 +182,18 @@ const DeletedModal = ({ setModalMode, data, type, meOnly, restrict }) => {
             onClick={() => setModalMode("")}
             className="px-4 py-2 text-white bg-slate-500 rounded-full"
           >
-            Cancel
+            Close
           </button>
-          {!restrict && (
-            <button
-              onClick={confirmHandler}
-              className="px-4 py-2 text-white bg-emerald-500 rounded-full"
-            >
-              Submit
-            </button>
-          )}
+          {data?.status != "request not approved" &&
+            data?.status != "deleted" &&
+            data?.status != "not approved" && (
+              <button
+                onClick={confirmHandler}
+                className="px-4 py-2 text-white bg-emerald-500 rounded-full"
+              >
+                Submit
+              </button>
+            )}
         </div>
       </div>
     );

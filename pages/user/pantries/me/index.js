@@ -11,12 +11,15 @@ import {
   ViewPantryCard,
 } from "../../../../components";
 import { useAppContext } from "../../../../context/AppContext";
-
+import moment from "moment";
+import { WarningSvg } from "../../../../components/Svg";
 const OwnPantry = () => {
+  const [expiredModal, setExpiredModal] = useState([]);
   const { state } = useAppContext();
   const [viewMoreData, setViewMoreData] = useState(null);
   const [data, setData] = useState();
   useEffect(() => {
+    expiredHandler();
     setData(state?.pantry?.filter((p) => p.user_id == state?.user?._id));
   }, [state?.pantry]);
   const [search, setSearch] = useState("");
@@ -43,8 +46,63 @@ const OwnPantry = () => {
       </Link>
     );
   };
+  const expiredHandler = () => {
+    let current_date = moment().clone();
+    let temp = [];
+    let refData = state?.pantry?.filter((p) => p.user_id == state?.user?._id);
+    if (refData) {
+      for (let i of refData) {
+        for (let j of i.supply) {
+          if (moment(j.expiration_date).clone().add(3, "days") < current_date)
+            temp.push({
+              itemname: j.name,
+              expiration: j.expiration_date,
+              pantryName: i.pantryName,
+            });
+        }
+      }
+    }
+    setExpiredModal(temp);
+    console.log(temp);
+  };
   return (
     <div>
+      {expiredModal.length > 0 && (
+        <ModalLayout>
+          <div className="">
+            <p className="bg-rose-500 flex gap-4 flex-row  text-white p-4 font-semibold text-xl rounded-md">
+              <span>
+                <WarningSvg />
+              </span>
+              Alert: There are supplies that about to expired
+            </p>
+            <div className="flex flex-col gap-4 my-4">
+              {expiredModal.map(
+                ({ itemname, expiration, pantryName }, index) => (
+                  <div key={index} className="">
+                    <p className=" p-2 px-4 rounded-md bg-slate-200 font-semibold ">
+                      Pantry Name: {pantryName}
+                    </p>
+
+                    <div className="px-4 my-2 flex items-center gap-4 justify-between">
+                      <p>{itemname}</p>
+                      <p>{moment(expiration).format("MMM DD, YYYY")}</p>
+                    </div>
+                  </div>
+                )
+              )}
+            </div>
+            <div className="text-center">
+              <button
+                onClick={() => setExpiredModal([])}
+                className="bg-slate-400 py-3 p-8 rounded-full text-white"
+              >
+                Ok
+              </button>
+            </div>
+          </div>
+        </ModalLayout>
+      )}
       {viewMoreData && (
         <ModalLayout>
           <ViewMoreModal

@@ -7,7 +7,6 @@ import DeletedModal from "../Modal/DeletedModal";
 const ViewPantryCard = ({ data, setViewMoreModal, meOnly }) => {
   const [modalMode, setModalMode] = useState("");
   const selectedDataRef = useRef();
-
   return (
     <>
       {modalMode == "edit" && (
@@ -20,6 +19,7 @@ const ViewPantryCard = ({ data, setViewMoreModal, meOnly }) => {
 
       {modalMode == "deleted" && (
         <DeletedModal
+          staticReason={true}
           meOnly={true}
           setModalMode={setModalMode}
           type="pantry"
@@ -117,6 +117,7 @@ const ViewPantryCard = ({ data, setViewMoreModal, meOnly }) => {
                         <span
                           onClick={() => {
                             selectedDataRef.current = index;
+
                             setModalMode("deleted");
                           }}
                           className="px-4 py-2 flex hover:bg-emerald-700 cursor-pointer bg-emerald-500 "

@@ -68,6 +68,12 @@ const PantrySchema = new mongoose.Schema({
   expiration: {
     type: Date,
   },
+  expirationCount: {
+    type: String,
+  },
+  distributedCount: {
+    type: String,
+  },
   created_at: {
     type: Date,
     default: Date.now,
