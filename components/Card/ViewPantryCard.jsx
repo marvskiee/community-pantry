@@ -40,7 +40,7 @@ const ViewPantryCard = ({ data, setViewMoreModal, meOnly }) => {
             (
               {
                 username,
-                dateTime,
+                created_at,
                 pantryImage,
                 pantryName,
                 aboutUs,
@@ -57,7 +57,7 @@ const ViewPantryCard = ({ data, setViewMoreModal, meOnly }) => {
               >
                 <div className="flex items-center justify-between mb-4">
                   <p className="font-semibold text-lg">{username}</p>
-                  <p>{moment(dateTime).format("MMM DD YYYY")}</p>
+                  <p>{moment(created_at).format("MMM DD YYYY")}</p>
                 </div>
                 <div className="flex items-start justify-center lg:flex-row flex-col gap-4">
                   <img

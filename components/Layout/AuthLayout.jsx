@@ -2,7 +2,12 @@ import React, { useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { authLogin, registerUser } from "../../services/user.services";
+import { NotVisible, VisibleSvg } from "../Svg";
 const AuthLayout = ({ authMode, setAuthMode }) => {
+  // password toggle
+  const [passwordToggle, setPasswordToggle] = useState(false);
+  const [repeatToggle, setRepeatToggle] = useState(false);
+
   const usernameRef = useRef();
   const [errors, setErrors] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -29,12 +34,16 @@ const AuthLayout = ({ authMode, setAuthMode }) => {
       label: "Password",
       type: "password",
       error: "passwordError",
+      toggle: passwordToggle,
+      setToggle: () => setPasswordToggle(!passwordToggle),
     },
     {
       ref: confirmPasswordRef,
       label: "Confirm Password",
       type: "password",
       error: "confirmPasswordError",
+      toggle: repeatToggle,
+      setToggle: () => setRepeatToggle(!repeatToggle),
     },
   ];
   const loginField = [
@@ -88,6 +97,10 @@ const AuthLayout = ({ authMode, setAuthMode }) => {
     }
     // const {success} =  await
   };
+  const clearForms = () => {
+    usernameRef.current.value = "";
+    passwordRef.current.value = "";
+  };
   const loginCard = () => {
     return (
       <>
@@ -127,6 +140,7 @@ const AuthLayout = ({ authMode, setAuthMode }) => {
                 className="cursor-pointer text-emerald-500"
                 onClick={() => {
                   setSuccess(false);
+                  clearForms();
                   setAuthMode("register");
                 }}
               >
@@ -147,23 +161,35 @@ const AuthLayout = ({ authMode, setAuthMode }) => {
               Get Started with us today! Create your account by filling out the
               information below.
             </p>
-            {registerField.map(({ ref, label, type, error }, index) => (
-              <div className="flex flex-col gap-2" key={index}>
-                <label className="text-center font-semibold pt-4">
-                  {label}:
-                </label>
-                {errors && (
-                  <span className="text-center text-rose-500">
-                    {errors[error]}
-                  </span>
-                )}
-                <input
-                  className="rounded-full px-4 py-3 border"
-                  type={type}
-                  ref={ref}
-                />
-              </div>
-            ))}
+            {registerField.map(
+              ({ setToggle, ref, toggle, label, type, error }, index) => (
+                <div className="relative flex flex-col gap-2" key={index}>
+                  <label className="text-center font-semibold pt-4">
+                    {label}:
+                  </label>
+                  {errors && (
+                    <span className="text-center text-rose-500">
+                      {errors[error]}
+                    </span>
+                  )}
+                  <div className="relative">
+                    <input
+                      className="w-full rounded-full px-4 py-3 border"
+                      type={toggle ? "text" : type}
+                      ref={ref}
+                    />
+                    {type == "password" && (
+                      <button
+                        onClick={setToggle}
+                        className="absolute top-3 cursor-pointer right-5"
+                      >
+                        {toggle ? <VisibleSvg /> : <NotVisible />}
+                      </button>
+                    )}
+                  </div>
+                </div>
+              )
+            )}
             <div className="mt-4 w-full gap-4  flex flex-col items-center justify-center">
               {!isLoading ? (
                 <button
@@ -209,7 +235,7 @@ const AuthLayout = ({ authMode, setAuthMode }) => {
       <div className="text-white sm:w-1/3 w-full p-4 sm:p-10 flex items-center justify-center flex-col">
         <img alt="logo" src="logo.png" className="w-20 h-20" />
         <p className="font-bold text-3xl">Welcome to</p>
-        <p className="font-semibold text-xl">Community Basket</p>
+        <p className="font-semibold text-xl">Community Basket by Wawangpulo</p>
       </div>
       {authMode == "register" ? registerCard() : loginCard()}
     </div>

@@ -9,7 +9,7 @@ export default async (req, res) => {
   switch (method) {
     case "GET":
       try {
-        const pantry = await Pantry.find();
+        const pantry = await Pantry.find().sort({ created_at: -1 });
         res.status(200).json({
           success: true,
           data: pantry,

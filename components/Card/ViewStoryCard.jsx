@@ -13,7 +13,7 @@ const ViewStoryCard = ({ data }) => {
             <div className="flex items-center justify-center flex-col ">
               <img
                 src={image}
-                className="w-full aspect-video object-cover  rounded-lg bg-slate-200"
+                className="w-full object-cover  rounded-lg bg-slate-200"
               />
               <p className="w-full font-semibold text-lg my-4">
                 Caption: {caption}

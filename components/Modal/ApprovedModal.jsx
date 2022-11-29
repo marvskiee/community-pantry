@@ -4,7 +4,7 @@ import ModalLayout from "../Layout/ModalLayout";
 import { useAppContext } from "../../context/AppContext";
 import { updateStory, getStory } from "../../services/story.services";
 import { getMetadata, newMetadata } from "../../services/metadata.services";
-
+import moment from "moment";
 const ApprovedModal = ({ setModalMode, data, type, approved }) => {
   const { dispatch } = useAppContext();
   const [isLoading, setIsLoading] = useState();
@@ -41,8 +41,10 @@ const ApprovedModal = ({ setModalMode, data, type, approved }) => {
       } else {
         newData = {
           status: "approved",
+          created_at: moment().format("YYYY-MM-DD hh:mm:ss"),
         };
       }
+      console.log(newData);
       const { success } = await updatePantry(newData, data.id);
       if (success) {
         const pantry_res = await getPantry();
@@ -56,6 +58,7 @@ const ApprovedModal = ({ setModalMode, data, type, approved }) => {
     } else {
       const newData = {
         status: "approved",
+        created_at: moment().format("YYYY-MM-DD hh:mm:ss"),
       };
       const { success } = await updateStory(newData, data.id);
       if (success) {

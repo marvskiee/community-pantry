@@ -9,7 +9,8 @@ export default async (req, res) => {
   switch (method) {
     case "GET":
       try {
-        const story = await Story.find();
+        const story = await Story.find().sort({ created_at: -1 });
+
         res.status(200).json({
           success: true,
           data: story,

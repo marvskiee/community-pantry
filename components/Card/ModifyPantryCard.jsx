@@ -240,7 +240,7 @@ const ModifyPantryCard = ({ data, status, deleted, declineIcon, approved }) => {
                             <div className="relative ">
                               <img
                                 src={image}
-                                className="w-20 h-20 rounded-lg bg-slate-200"
+                                className="object-cover w-20 h-20 rounded-lg bg-slate-200"
                               />
                               <p className="flex items-center text-center justify-center aspect-square w-8 h-8 rounded-full bg-slate-600 text-white absolute top-0 right-0">
                                 {quantity}

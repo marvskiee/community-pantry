@@ -25,11 +25,26 @@ export default async (req, res) => {
       if (username?.trim() == "" || username == undefined) {
         newError = { ...newError, usernameError: "Please enter username!" };
       }
-      if (email?.trim() == "" || email == undefined) {
-        newError = { ...newError, emailError: "Please enter email!" };
+      if (
+        !email.match(
+          /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+        )
+      ) {
+        newError = {
+          ...newError,
+          emailError: "Please enter valid email address!",
+        };
       }
-      if (password?.trim() == "" || password == undefined) {
-        newError = { ...newError, passwordError: "Please enter password!" };
+      if (
+        password.length < 8 ||
+        password?.trim() == "" ||
+        password == undefined
+      ) {
+        newError = {
+          ...newError,
+          passwordError:
+            "Please enter password and must be atleast 8 characters!",
+        };
       }
       if (
         confirmPassword?.trim() == "" ||

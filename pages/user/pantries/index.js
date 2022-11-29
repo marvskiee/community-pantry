@@ -110,7 +110,21 @@ const Home = () => {
     setPantryImage(null);
     setError(null);
   };
+  const expiredHandler = () => {
+    let newDate = moment().clone().format("YYYY-MM-DD");
+    console.log(newDate);
+    for (let i of supplyList) {
+      if (i.expiration_date < newDate) {
+        return true;
+      }
+    }
+    return false;
+  };
   const validateHandler = () => {
+    if (expiredHandler()) {
+      setError("All fields are required!");
+      return;
+    }
     const newData = {
       pantryName: pantryNameRef.current.value.trim(),
       aboutUs: aboutUsRef.current.value.trim(),
@@ -128,6 +142,7 @@ const Home = () => {
       aboutUs.length > 0 &&
       address.length > 0 &&
       contact.length > 0 &&
+      contact.length == 10 &&
       // guideline.length > 0 &&
       supplyList.length > 0 &&
       closing != null &&
@@ -270,12 +285,15 @@ const Home = () => {
           placeholder="Address"
           ref={addressRef}
         />
-        <input
-          className="rounded-full px-4 py-3 border"
-          placeholder="Contact Information"
-          type="number"
-          ref={contactRef}
-        />
+        <div className="relative">
+          <span className="absolute left-4 top-3 text-lg">+63</span>
+          <input
+            className="w-full pl-14 rounded-full px-4 py-3 border"
+            placeholder="Contact Number"
+            type="number"
+            ref={contactRef}
+          />
+        </div>
         <div className="rounded-3xl border p-4">
           {hourError && (
             <p className="py-2 text-rose-500 font-semibold">Invalid time!</p>
@@ -396,6 +414,7 @@ const Home = () => {
                 <input
                   className="w-full rounded-full px-4 py-3 border"
                   type="date"
+                  min={moment().format("YYYY-MM-DD")}
                   onChange={(e) => expirationHandler(index, e.target.value)}
                 />
               </div>
@@ -474,7 +493,7 @@ const Home = () => {
     return (
       <div className="p-2 flex-col flex gap-4">
         <p className="font-semibold text-xl">Terms and conditions</p>
-        <p className="my-4 max-h-modal">
+        <p className="my-4">
           Sed ut perspiciatis unde omnis iste natus error sit voluptatem
           accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae
           ab illo inventore veritatis et quasi architecto beatae vitae dicta

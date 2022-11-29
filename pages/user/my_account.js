@@ -5,16 +5,20 @@ import {
   SideBar,
   UserWrapperLayout,
 } from "../../components";
+import { NotVisible, VisibleSvg } from "../../components/Svg";
 import { useAppContext } from "../../context/AppContext";
 import { changePassword, changeUsername } from "../../services/user.services";
 
 const MyAccount = () => {
+  // toggle
+  const [passwordToggle, setPasswordToggle] = useState(false);
+
   const { state, dispatch } = useAppContext();
   const [errors, setErrors] = useState(null);
   const [success, setSuccess] = useState(false);
   const [modal, setModal] = useState(false);
   const modalModeRef = useRef();
-
+  const [isLoading, setIsLoading] = useState(false);
   // reference for change username
   const usernameRef = useRef();
   const passwordRef = useRef();
@@ -23,6 +27,7 @@ const MyAccount = () => {
   const newPasswordRef = useRef();
   const confirmPasswordRef = useRef();
   const passwordHandler = async () => {
+    setIsLoading(true);
     let temp_error = {};
     const oldPass = oldPasswordRef.current.value;
     const newPass = newPasswordRef.current.value;
@@ -64,8 +69,10 @@ const MyAccount = () => {
         setErrors(res.errors);
       }
     }
+    setIsLoading(false);
   };
   const usernameHandler = async () => {
+    setIsLoading(true);
     let temp_error = {};
     const user = usernameRef.current.value;
     const pass = passwordRef.current.value;
@@ -102,11 +109,13 @@ const MyAccount = () => {
         setErrors(res.errors);
       }
     }
+    setIsLoading(false);
   };
   const clearForms = () => {
-    oldPasswordRef.current = "";
-    newPasswordRef.current = "";
-    confirmPasswordRef.current = "";
+    oldPasswordRef.current = null;
+    newPasswordRef.current = null;
+    confirmPasswordRef.current = null;
+    usernameRef.current = null;
     setSuccess(false);
     setErrors(null);
   };
@@ -133,6 +142,7 @@ const MyAccount = () => {
           className="rounded-full px-4 py-3 border"
           type="password"
           id="password"
+          defaultValue={passwordRef.current?.value}
           ref={oldPasswordRef}
         />
         <label htmlFor="newpassword">New Password</label>
@@ -141,6 +151,7 @@ const MyAccount = () => {
           className="rounded-full px-4 py-3 border"
           type="password"
           id="newpassword"
+          defaultValue={newPasswordRef.current?.value}
           ref={newPasswordRef}
         />
         <label htmlFor="confirmpassword">Confirm Password</label>
@@ -153,23 +164,31 @@ const MyAccount = () => {
           id="confirmpassword"
           ref={confirmPasswordRef}
         />
-        <div className="flex gap-4 justify-end items-start">
-          <button
-            onClick={() => {
-              setModal(false);
-              clearForms();
-            }}
-            className="p-3 px-8 bg-slate-400 transition-colors hover:bg-emerald-700 text-white rounded-full "
-          >
-            Cancel
-          </button>
-          <button
-            onClick={passwordHandler}
-            className="p-3 px-8 bg-emerald-600 transition-colors hover:bg-emerald-700 text-white rounded-full "
-          >
-            Save Changes
-          </button>
-        </div>
+        {isLoading ? (
+          <div className="flex gap-4 justify-end items-start">
+            <button className="p-3 px-8 bg-slate-400 transition-colors hover:bg-emerald-700 text-white rounded-full ">
+              Saving...
+            </button>
+          </div>
+        ) : (
+          <div className="flex gap-4 justify-end items-start">
+            <button
+              onClick={() => {
+                setModal(false);
+                clearForms();
+              }}
+              className="p-3 px-8 bg-slate-400 transition-colors hover:bg-emerald-700 text-white rounded-full "
+            >
+              Cancel
+            </button>
+            <button
+              onClick={passwordHandler}
+              className="p-3 px-8 bg-emerald-600 transition-colors hover:bg-emerald-700 text-white rounded-full "
+            >
+              Save Changes
+            </button>
+          </div>
+        )}
       </div>
     );
   };
@@ -200,12 +219,20 @@ const MyAccount = () => {
         />
         <label htmlFor="password">Password</label>
         {errors && <p className="text-rose-500">{errors?.passwordError}</p>}
-        <input
-          ref={passwordRef}
-          className="rounded-full px-4 py-3 border"
-          type="text"
-          id="password"
-        />
+        <div className="relative">
+          <input
+            ref={passwordRef}
+            className="w-full rounded-full px-4 py-3 border"
+            type={!passwordToggle ? "password" : "text"}
+            id="password"
+          />
+          <button
+            onClick={() => setPasswordToggle(!passwordToggle)}
+            className="absolute top-3 cursor-pointer right-5"
+          >
+            {passwordToggle ? <VisibleSvg /> : <NotVisible />}
+          </button>
+        </div>
         <div className="flex gap-4 justify-end items-start">
           <button
             onClick={() => {
@@ -248,6 +275,10 @@ const MyAccount = () => {
               <p className=" text-lg">
                 <span className="font-semibold">Current Password: </span>{" "}
                 *******
+              </p>
+              <p className=" text-lg">
+                <span className="font-semibold">Email: </span>{" "}
+                {state?.user?.email}
               </p>
             </div>
             <div className="flex gap-4 sm:flex-row flex-col items-center justify-end">

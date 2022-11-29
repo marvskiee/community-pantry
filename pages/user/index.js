@@ -30,9 +30,6 @@ const Home = () => {
       <div className="flex">
         <SideBar />
         <UserWrapperLayout title="Guidelines" center={true}>
-          <pre className="p-8 bg-white rounded-md">
-            {state?.guidelines?.guideline}
-          </pre>
           <div className=" sm:py-5 py-2 bg-slate-100 z-20 sticky flex-col lg:flex-row lg:items-center items-start top-0 w-full flex justify-between">
             <p
               className={`py-5 text-2xl uppercase tracking-wide font-light text-center}`}
@@ -44,7 +41,10 @@ const Home = () => {
             <div className="w-full">
               <ViewStoryCard data={story} />
             </div>
-            <DashboardCard data={data} />
+            <DashboardCard
+              data={data}
+              guidelines={state?.guidelines?.guideline}
+            />
           </div>
         </UserWrapperLayout>
       </div>

@@ -47,7 +47,7 @@ const Reports = () => {
       color: "bg-rose-500",
     },
     {
-      label: "distributed pantries",
+      label: "distributed supplies",
       count: metadatadHandler(1),
       color: "bg-blue-500",
     },

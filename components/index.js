@@ -17,6 +17,7 @@ export { default as BackgroundLayout } from "./Layout/BackgroundLayout.jsx";
 export { default as AdminWrapperLayout } from "./Layout/AdminWrapperLayout.jsx";
 export { default as UserWrapperLayout } from "./Layout/UserWrapperLayout.jsx";
 export { default as ModalLayout } from "./Layout/ModalLayout.jsx";
+export { default as Footer } from "./Layout/Footer.jsx";
 
 export { default as ApprovedModal } from "./Modal/ApprovedModal.jsx";
 export { default as DeletedModal } from "./Modal/DeletedModal.jsx";
