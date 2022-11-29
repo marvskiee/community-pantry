@@ -489,37 +489,66 @@ const Home = () => {
       searchSupplyHelper(item.supply) ||
       item.address.toLowerCase().includes(search.toLowerCase())
   );
+  const termsData1 = [
+    ` These terms and conditions outline the rules and regulations for the
+use of Community Basket's Website, located at
+https://bc-pantry.herokuapp.com/user/pantries.`,
+    ` By accessing this website we assume you accept these terms and
+conditions. Do not continue to use Community Basket if you do not
+agree to take all of the terms and conditions stated on this page.`,
+    `The following terminology applies to these Terms and Conditions, Privacy Statement and Disclaimer Notice and all Agreements: "Client", "You" and "Your" refers to you, the person log on this website and compliant to the Company’s terms and conditions. "The Company", "Ourselves", "We", "Our" and "Us", refers to our Company. "Party", "Parties", or "Us", refers to both the Client and ourselves. All terms refer to the offer, acceptance and consideration of payment necessary to undertake the process of our assistance to the Client in the most appropriate manner for the express purpose of meeting the Client’s needs in respect of provision of the Company’s stated services, in accordance with and subject to, prevailing law of Netherlands. Any use of the above terminology or other words in the singular, plural, capitalization and/or he/she or they, are taken as interchangeable and therefore as referring to same.`,
+  ];
   const termsUI = () => {
     return (
       <div className="p-2 flex-col flex gap-4">
         <p className="font-semibold text-xl">Terms and conditions</p>
-        <p className="my-4">
-          Sed ut perspiciatis unde omnis iste natus error sit voluptatem
-          accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae
-          ab illo inventore veritatis et quasi architecto beatae vitae dicta
-          sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit
-          aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos
-          qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui
-          dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed
-          quia non numquam eius modi tempora incidunt ut labore et dolore magnam
-          aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum
-          exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex
-          ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in
-          ea voluptate velit esse quam nihil molestiae consequatur, vel illum
-          qui dolorem eum fugiat quo voluptas nulla pariatur? Sed ut
-          perspiciatis unde omnis iste natus error sit voluptatem accusantium
-          doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo
-          inventore veritatis et quasi architecto beatae vitae dicta sunt
-          explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut
-          odit aut fugit, sed quia consequuntur magni dolores eos qui ratione
-          voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum
-          quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam
-          eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat
-          voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem
-          ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi
-          consequatur? Quis autem vel eum iure reprehenderit qui in ea voluptate
-          velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum
-          fugiat quo voluptas nulla pariatur?
+        <p className="font-semibold text-xl">Welcome to Community Basket!</p>
+        {termsData1.map((data, index) => (
+          <p className="my-2" key={index}>
+            {data}
+          </p>
+        ))}
+        <p className="my-2 font-semibold text-xl">Content Liability</p>
+        <p className="my-2">
+          We shall not be hold responsible for any content that appears on your
+          Website. You agree to protect and defend us against all claims that is
+          rising on your Website. No link(s) should appear on any Website that
+          may be interpreted as libelous, obscene or criminal, or which
+          infringes, otherwise violates, or advocates the infringement or other
+          violation of, any third party rights.
+        </p>
+        <p className="my-2 font-semibold text-xl">Disclaimer</p>
+        <p className="my-2">
+          To the maximum extent permitted by applicable law, we exclude all
+          representations, warranties and conditions relating to our website and
+          the use of this website. Nothing in this disclaimer will:
+          <br />
+        </p>
+        <ul className="my-2 list-disc pl-10">
+          <li>
+            limit or exclude our or your liability for fraud or fraudulent
+            misrepresentation;
+          </li>
+          <li>
+            limit any of our or your liabilities in any way that is not
+            permitted under applicable law; or
+          </li>
+          <li>
+            exclude any of our or your liabilities that may not be excluded
+            under applicable law.
+          </li>
+        </ul>
+        <p>
+          The limitations and prohibitions of liability set in this Section and
+          elsewhere in this disclaimer: (a) are subject to the preceding
+          paragraph; and (b) govern all liabilities arising under the
+          disclaimer, including liabilities arising in contract, in tort and for
+          breach of statutory duty.
+          <br />
+          <br />
+          As long as the website and the information and services on the website
+          are provided free of charge, we will not be liable for any loss or
+          damage of any nature.
         </p>
         <div className="flex gap-2 justify-center">
           <input

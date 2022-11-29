@@ -5,8 +5,7 @@
     "build": "next build",
     "start": "next start -p $PORT",
     "heroku-postbuild": "npm run build",
-    "dev": "next dev",
-    "lint": "next lint"
+    "dev": "next dev"
   },
   "dependencies": {
     "moment": "^2.29.4",
