@@ -27,10 +27,11 @@ export default async (req, res) => {
   } else {
     let result = null;
     try {
-      const user = await User.findOne({ username, password }).select([
-        "-password",
-        "-__v",
-      ]);
+      const user = await User.findOne({
+        username,
+        password,
+        status: true,
+      }).select(["-password", "-__v"]);
       result = user;
     } catch (error) {
       console.log(error);

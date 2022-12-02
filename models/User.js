@@ -15,10 +15,17 @@ const UserSchema = new mongoose.Schema({
     type: String,
     required: [true, "Please fill up this field"],
   },
+  code: {
+    type: String,
+  },
   role: {
     type: String,
     default: "user",
     required: [true, "Please fill up this field"],
+  },
+  status: {
+    type: Boolean,
+    default: false,
   },
 });
 

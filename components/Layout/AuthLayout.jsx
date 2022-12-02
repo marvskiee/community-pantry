@@ -3,6 +3,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { authLogin, registerUser } from "../../services/user.services";
 import { NotVisible, VisibleSvg } from "../Svg";
+import { sendEmail } from "../../services/sendgrid.services";
 const AuthLayout = ({ authMode, setAuthMode }) => {
   // password toggle
   const [passwordToggle, setPasswordToggle] = useState(false);
@@ -86,8 +87,16 @@ const AuthLayout = ({ authMode, setAuthMode }) => {
       confirmPassword: confirmPasswordRef.current?.value || "'",
     };
     console.log(newData);
-    const { success, errors } = await registerUser(newData);
+    const { success, errors, data } = await registerUser(newData);
     if (success) {
+      console.log(data);
+      const { username, _id, email } = data;
+      const emailData = {
+        email: email,
+        link: _id,
+        username,
+      };
+      await sendEmail(emailData);
       setIsLoading(false);
       setSuccess(true);
       setErrors(null);
@@ -107,10 +116,10 @@ const AuthLayout = ({ authMode, setAuthMode }) => {
         <div className="bg-white p-10 rounded-xl w-full sm:w-2/3">
           <p className="text-xl font-semibold">Login</p>
           {loginField.map(({ ref, label, type, error }, index) => (
-            <div className="flex flex-col gap-2" key={index}>
+            <div className="flex flex-col gap-2" key={`${index}`}>
               <label className="text-center font-semibold p-4">{label}:</label>
               {errors && (
-                <span className="text-center text-rose-500">
+                <span className="text-center text-rose-500" key={index + 5}>
                   {errors[error]}
                 </span>
               )}
@@ -121,6 +130,10 @@ const AuthLayout = ({ authMode, setAuthMode }) => {
               />
             </div>
           ))}
+
+          <p className="text-emerald-500 font-semibold my-4 text-center w-full">
+            <Link href="/forgot_password">Forgot Password</Link>
+          </p>
           <div className="mt-4 w-full gap-4  flex flex-col items-center justify-center">
             {!isLoading ? (
               <button
@@ -141,6 +154,7 @@ const AuthLayout = ({ authMode, setAuthMode }) => {
                 onClick={() => {
                   setSuccess(false);
                   clearForms();
+                  setErrors(null);
                   setAuthMode("register");
                 }}
               >
@@ -163,7 +177,7 @@ const AuthLayout = ({ authMode, setAuthMode }) => {
             </p>
             {registerField.map(
               ({ setToggle, ref, toggle, label, type, error }, index) => (
-                <div className="relative flex flex-col gap-2" key={index}>
+                <div className="relative flex flex-col gap-2" key={`${index}`}>
                   <label className="text-center font-semibold pt-4">
                     {label}:
                   </label>
@@ -207,7 +221,11 @@ const AuthLayout = ({ authMode, setAuthMode }) => {
                 Already have an account?{" "}
                 <span
                   className="cursor-pointer text-emerald-500"
-                  onClick={() => setAuthMode("login")}
+                  onClick={() => {
+                    setAuthMode("login");
+                    setErrors(null);
+                    clearForms();
+                  }}
                 >
                   Login
                 </span>
@@ -217,10 +235,12 @@ const AuthLayout = ({ authMode, setAuthMode }) => {
         ) : (
           <div className="bg-white p-10 rounded-xl sm:w-2/3 w-full flex flex-col items-center">
             <p className="text-xl font-semibold">
-              You have now created an account please, Please proceed to login.
+              Please check your email and confirm to be able to login.
             </p>
             <button
-              onClick={() => setAuthMode("login")}
+              onClick={() => {
+                setAuthMode("login");
+              }}
               className=" px-10 py-3 text-xl text-white bg-emerald-500 mt-5 rounded-full font-bold"
             >
               Login
@@ -233,7 +253,7 @@ const AuthLayout = ({ authMode, setAuthMode }) => {
   return (
     <div className="max-w-authCard w-full rounded-2xl flex-col sm:flex-row bg-emerald-500  flex items-center justify-center ">
       <div className="text-white sm:w-1/3 w-full p-4 sm:p-10 flex items-center justify-center flex-col">
-        <img alt="logo" src="logo.png" className="w-20 h-20" />
+        <img alt="logo" src="/logo.png" className="w-20 h-20" />
         <p className="font-bold text-3xl">Welcome to</p>
         <p className="font-semibold text-xl">Community Basket by Wawangpulo</p>
       </div>
