@@ -2,7 +2,7 @@ import React, { useState, useRef } from "react";
 import moment from "moment";
 import { DeleteSvg } from "../Svg";
 import DeletedModal from "../Modal/DeletedModal";
-const ViewStoryCard = ({ data }) => {
+const ViewStoryCard = ({ data, own }) => {
   const [modalMode, setModalMode] = useState("");
   const deleteHandler = (index) => {
     selectedDataRef.current = index;
@@ -32,12 +32,14 @@ const ViewStoryCard = ({ data }) => {
               <div className="flex items-center justify-between mb-4">
                 <p className="font-semibold text-lg">{username}</p>
                 <div className="flex flex-row-reverse items-center gap-4 justify-center">
-                  <button
-                    onClick={() => deleteHandler(index)}
-                    className="p-2 rounded-full bg-rose-500"
-                  >
-                    <DeleteSvg />
-                  </button>
+                  {own && (
+                    <button
+                      onClick={() => deleteHandler(index)}
+                      className="p-2 rounded-full bg-rose-500"
+                    >
+                      <DeleteSvg />
+                    </button>
+                  )}
                   <p>{moment(created_at).format("MMM DD YYYY")}</p>
                 </div>
               </div>

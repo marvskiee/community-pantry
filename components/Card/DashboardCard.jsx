@@ -19,7 +19,7 @@ const DashboardCard = ({ data, guidelines }) => {
         </pre>
       </div>
       <div className="sm:p-10 p-5 rounded-lg border w-full bg-white">
-        <p className="font-semibold text-xl text-center mb-2">Dashboard</p>
+        <p className="font-semibold text-xl text-center mb-2">Announcements</p>
         <p className="text-center py-2 font-semibold">
           New listed pantry today! <br />
         </p>

@@ -5,7 +5,11 @@ import { authLogin, getUser, registerUser } from "../../services/user.services";
 import { NotVisible, VisibleSvg } from "../Svg";
 import { sendEmail } from "../../services/sendgrid.services";
 const AuthLayout = ({ authMode, setAuthMode }) => {
-  // password toggle
+  // password toggle login
+
+  const [loginPasswordToggle, setLoginPasswordToggle] = useState(false);
+  // password toggle register
+
   const [passwordToggle, setPasswordToggle] = useState(false);
   const [repeatToggle, setRepeatToggle] = useState(false);
 
@@ -60,7 +64,7 @@ const AuthLayout = ({ authMode, setAuthMode }) => {
   const loginField = [
     {
       ref: usernameRef,
-      label: "Username",
+      label: "Username or Email",
       type: "text",
       error: "usernameError",
     },
@@ -69,6 +73,12 @@ const AuthLayout = ({ authMode, setAuthMode }) => {
       label: "Password",
       type: "password",
       error: "passwordError",
+      toggle: loginPasswordToggle,
+
+      setToggle: () => {
+        console.log(loginPasswordToggle);
+        setLoginPasswordToggle(!loginPasswordToggle);
+      },
     },
   ];
   const loginHandler = async (e) => {
@@ -126,21 +136,35 @@ const AuthLayout = ({ authMode, setAuthMode }) => {
       <>
         <div className="bg-white p-10 rounded-xl w-full sm:w-2/3">
           <p className="text-xl font-semibold">Login</p>
-          {loginField.map(({ ref, label, type, error }, index) => (
-            <div className="flex flex-col gap-2" key={`${index}`}>
-              <label className="text-center font-semibold p-4">{label}:</label>
-              {errors && (
-                <span className="text-center text-rose-500" key={index + 5}>
-                  {errors[error]}
-                </span>
-              )}
-              <input
-                className="rounded-full px-4 py-3 border"
-                type={type}
-                ref={ref}
-              />
-            </div>
-          ))}
+          {loginField.map(
+            ({ ref, label, type, error, setToggle, toggle }, index) => (
+              <div className="flex flex-col gap-2" key={`${index}`}>
+                <label className="text-center font-semibold p-4">
+                  {label}:
+                </label>
+                {errors && (
+                  <span className="text-center text-rose-500" key={index + 5}>
+                    {errors[error]}
+                  </span>
+                )}
+                <div className="relative">
+                  <input
+                    className="w-full rounded-full px-4 py-3 border"
+                    type={toggle ? "text" : type}
+                    ref={ref}
+                  />
+                  {label == "Password" && (
+                    <button
+                      onClick={setToggle}
+                      className="absolute top-3 cursor-pointer right-5"
+                    >
+                      {toggle ? <VisibleSvg /> : <NotVisible />}
+                    </button>
+                  )}
+                </div>
+              </div>
+            )
+          )}
 
           <p className="text-emerald-500 font-semibold my-4 text-center w-full">
             <Link href="/forgot_password">Forgot Password</Link>

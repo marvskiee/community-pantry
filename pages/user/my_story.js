@@ -121,7 +121,7 @@ const MyStory = () => {
               </button>
             )}
           </div>
-          <ViewStoryCard data={story} />
+          <ViewStoryCard data={story} own={true} />
         </UserWrapperLayout>
       </div>
     </div>

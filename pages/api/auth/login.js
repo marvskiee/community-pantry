@@ -11,7 +11,10 @@ export default async (req, res) => {
   const { username, password } = req.body;
   let newError = {};
   if (username?.trim() == "" || username == undefined) {
-    newError = { ...newError, usernameError: "Please enter username!" };
+    newError = {
+      ...newError,
+      usernameError: "Please enter username or email!",
+    };
   }
   if (password?.trim() == "" || password == undefined) {
     newError = { ...newError, passwordError: "Please enter password!" };
@@ -28,7 +31,7 @@ export default async (req, res) => {
     let result = null;
     try {
       const user = await User.findOne({
-        username,
+        $or: [{ username: username }, { email: username }],
         password,
         status: true,
       }).select(["-password", "-__v"]);
@@ -58,7 +61,7 @@ export default async (req, res) => {
     } else {
       res.json({
         success: false,
-        errors: { usernameError: "Wrong passwod or username!" },
+        errors: { usernameError: "Wrong credentials!" },
       });
     }
   }
