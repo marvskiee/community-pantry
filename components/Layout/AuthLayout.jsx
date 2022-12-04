@@ -1,7 +1,7 @@
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { authLogin, registerUser } from "../../services/user.services";
+import { authLogin, getUser, registerUser } from "../../services/user.services";
 import { NotVisible, VisibleSvg } from "../Svg";
 import { sendEmail } from "../../services/sendgrid.services";
 const AuthLayout = ({ authMode, setAuthMode }) => {
@@ -17,6 +17,16 @@ const AuthLayout = ({ authMode, setAuthMode }) => {
   const passwordRef = useRef();
   const confirmPasswordRef = useRef();
   const router = useRouter();
+  useEffect(() => {
+    const load = async () => {
+      const res = await getUser();
+      console.log(res);
+      if (res.success) {
+        router.push(res.data.role);
+      }
+    };
+    load();
+  }, []);
   const registerField = [
     {
       ref: usernameRef,
@@ -72,6 +82,7 @@ const AuthLayout = ({ authMode, setAuthMode }) => {
     console.log(errors);
     if (success) {
       // console.log(data);
+      // localStorage.setItem("role", data?.role);
       router.push("/" + data?.role);
     } else {
       setErrors(errors);

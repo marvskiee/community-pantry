@@ -6,12 +6,12 @@ export default function middleware(req) {
 
   let verifys = req.cookies.get("OursiteJWT");
   let url = req.url;
-  
-  // online domain for heroku 
+
+  // online domain for heroku
   // const domain = "https://bc-pantry.herokuapp.com/";
-  
-  // offline domain for localhost   
-  const domain = "http://localhost:3000/"
+
+  // offline domain for localhost
+  const domain = process.env.CUSTOM_PROXY;
 
   if (!verifys && url.split("/")[3] == "user") {
     return NextResponse.redirect(`${domain}login`);
