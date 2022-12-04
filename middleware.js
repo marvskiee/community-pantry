@@ -19,4 +19,5 @@ export default function middleware(req) {
   if (!verifys && url.split("/")[3] == "admin") {
     return NextResponse.redirect(`${domain}login`);
   }
+  //nothing just to push
 }
