@@ -3,6 +3,7 @@ import moment from "moment";
 import { CheckSvg, DeleteSvg, EditSvg, RestoreSvg } from "../Svg";
 import UpdatePantryModal from "../Modal/UpdatePantryModal";
 import DeletedModal from "../Modal/DeletedModal";
+import { hour } from "../../services/hous";
 
 const ViewPantryCard = ({ data, setViewMoreModal, meOnly }) => {
   const [modalMode, setModalMode] = useState("");
@@ -85,13 +86,8 @@ const ViewPantryCard = ({ data, setViewMoreModal, meOnly }) => {
                       <span className="font-semibold ">
                         Opening and Closing hours:{" "}
                       </span>
-                      {moment(open)
-                        .add(parseInt(en), "hours")
-                        .format("hh:mm A")}{" "}
-                      -{" "}
-                      {moment(close)
-                        .add(parseInt(en), "hours")
-                        .format("hh:mm A")}
+                      {moment(open).add(hour, "hours").format("hh:mm A")} -{" "}
+                      {moment(close).add(hour, "hours").format("hh:mm A")}
                     </p>
                   </div>
                 </div>

@@ -377,7 +377,7 @@ const UpdatePantryModal = ({ setModalMode, data, meOnly }) => {
               placeholder="Contact Information"
               type="time"
               defaultValue={moment(data?.open)
-                .add(parseInt(process.env.NEXT_PUBLIC_ADD_HOURS), "hours")
+                .add(hour, "hours")
                 .format("HH:MM")}
               onChange={() => {
                 hourHandler();
@@ -390,7 +390,7 @@ const UpdatePantryModal = ({ setModalMode, data, meOnly }) => {
               placeholder="Contact Information"
               type="time"
               defaultValue={moment(data?.close)
-                .add(parseInt(process.env.NEXT_PUBLIC_ADD_HOURS), "hours")
+                .add(hour, "hours")
                 .format("HH:MM")}
               onChange={() => {
                 hourHandler();

@@ -172,19 +172,8 @@ const UserPantryCard = ({ data, status, meOnly }) => {
                         <span className="font-semibold text-lg">
                           Opening and Closing hours:{" "}
                         </span>
-                        {moment(open)
-                          .add(
-                            parseInt(process.env.NEXT_PUBLIC_ADD_HOURS),
-                            "hours"
-                          )
-                          .format("hh:mm A")}{" "}
-                        -{" "}
-                        {moment(close)
-                          .add(
-                            parseInt(process.env.NEXT_PUBLIC_ADD_HOURS),
-                            "hours"
-                          )
-                          .format("hh:mm A")}
+                        {moment(open).add(hour, "hours").format("hh:mm A")} -{" "}
+                        {moment(close).add(hour, "hours").format("hh:mm A")}
                       </p>
                       <p>
                         <span className="font-semibold text-lg">

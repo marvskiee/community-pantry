@@ -214,13 +214,8 @@ const ModifyPantryCard = ({ data, status, deleted, declineIcon, approved }) => {
                       <span className="font-semibold ">
                         Opening and Closing hours:{" "}
                       </span>
-                      {moment(item.open)
-                        .add(process.env.NEXT_PUBLIC_ADD_HOURS, "hours")
-                        .format("hh:mm A")}{" "}
-                      -{" "}
-                      {moment(item.close)
-                        .add(process.env.NEXT_PUBLIC_ADD_HOURS, "hours")
-                        .format("hh:mm A")}
+                      {moment(item.open).add(hour, "hours").format("hh:mm A")} -{" "}
+                      {moment(item.close).add(hour, "hours").format("hh:mm A")}
                     </p>
                     <p>
                       <span className="font-semibold text-lg">
