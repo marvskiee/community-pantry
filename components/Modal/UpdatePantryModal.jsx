@@ -11,6 +11,7 @@ import { useAppContext } from "../../context/AppContext";
 import { storage } from "../../services/firebase";
 import { updatePantry, getPantry } from "../../services/pantry.services";
 import moment from "moment";
+import { hour } from "../../services/hous";
 
 const UpdatePantryModal = ({ setModalMode, data, meOnly }) => {
   console.log(data);
@@ -126,10 +127,10 @@ const UpdatePantryModal = ({ setModalMode, data, meOnly }) => {
       pantryImage: readyDataRef.current.pantryImage,
       open:
         moment().format("YYYY-MM-DD ") +
-        moment(openingRef.current.value).subtract(8, "hours").format("hh:mm"),
+        moment(openingRef.current.value).subtract(8, "hours").format("HH:MM"),
       close:
         moment().format("YYYY-MM-DD ") +
-        moment(closingRef.current.value).subtract(8, "hours").format("hh:mm"),
+        moment(closingRef.current.value).subtract(8, "hours").format("HH:MM"),
       expirationCount: expiredRef.current?.value,
       distributedCount: distributedRef.current?.value,
     };
@@ -375,7 +376,9 @@ const UpdatePantryModal = ({ setModalMode, data, meOnly }) => {
               className="rounded-full px-4 py-3 border"
               placeholder="Contact Information"
               type="time"
-              defaultValue={moment(data?.open).add(8, "hours").format("HH:MM")}
+              defaultValue={moment(data?.open)
+                .add(hour, "hours")
+                .format("HH:MM")}
               onChange={() => {
                 hourHandler();
               }}
@@ -386,7 +389,9 @@ const UpdatePantryModal = ({ setModalMode, data, meOnly }) => {
               className="rounded-full px-4 py-3 border"
               placeholder="Contact Information"
               type="time"
-              defaultValue={moment(data?.close).add(8, "hours").format("HH:MM")}
+              defaultValue={moment(data?.close)
+                .add(hour, "hours")
+                .format("HH:MM")}
               onChange={() => {
                 hourHandler();
               }}

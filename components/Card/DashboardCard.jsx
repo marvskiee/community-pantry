@@ -1,6 +1,7 @@
 import React from "react";
 import moment from "moment";
 import { BasketSvg } from "../Svg";
+import { hour } from "../../services/hous";
 const DashboardCard = ({ data, guidelines }) => {
   const datas = [
     {
@@ -35,9 +36,9 @@ const DashboardCard = ({ data, guidelines }) => {
                 <div className="text-left">
                   <p className="text-lg font-semibold">{pantryName}</p>
                   <p className="">
-                    {moment(open).add(8, "hours").format("hh:mm A")}
+                    {moment(open).add(hour, "hours").format("hh:mm A")}
                     {" - "}
-                    {moment(close).add(8, "hours").format("hh:mm A")}
+                    {moment(close).add(hour, "hours").format("hh:mm A")}
                   </p>
                   <p className="">{address}</p>
                 </div>

@@ -14,6 +14,7 @@ import {
   reasonsForNotApprovingRequest,
 } from "../../services/reason.services";
 import { newMetadata } from "../../services/metadata.services";
+import { hour } from "../../services/hous";
 const ModifyPantryCard = ({ data, status, deleted, declineIcon, approved }) => {
   const [modalMode, setModalMode] = useState("");
   const selectedDataRef = useRef();
@@ -213,8 +214,8 @@ const ModifyPantryCard = ({ data, status, deleted, declineIcon, approved }) => {
                       <span className="font-semibold ">
                         Opening and Closing hours:{" "}
                       </span>
-                      {moment(item.open).add(8, "hours").format("hh:mm A")} -{" "}
-                      {moment(item.close).add(8, "hours").format("hh:mm A")}
+                      {moment(item.open).add(hour, "hours").format("hh:mm A")} -{" "}
+                      {moment(item.close).add(hour, "hours").format("hh:mm A")}
                     </p>
                     <p>
                       <span className="font-semibold text-lg">

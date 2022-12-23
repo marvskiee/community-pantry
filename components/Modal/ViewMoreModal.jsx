@@ -1,5 +1,6 @@
 import React from "react";
 import moment from "moment";
+import { hour } from "../../services/hous";
 const ViewMoreModal = ({ data, setViewMoreModal }) => {
   const {
     username,
@@ -50,8 +51,8 @@ const ViewMoreModal = ({ data, setViewMoreModal }) => {
               <span className="font-semibold text-lg">
                 Opening and Closing hours:{" "}
               </span>
-              {moment(open).add(8, "hours").format("hh:mm A")} -{" "}
-              {moment(close).add(8, "hours").format("hh:mm A")}
+              {moment(open).add(hour, "hours").format("hh:mm A")} -{" "}
+              {moment(close).add(hour, "hours").format("hh:mm A")}
             </p>
             {/* <p>
               <span className="font-semibold text-lg">Guidelines: </span>
