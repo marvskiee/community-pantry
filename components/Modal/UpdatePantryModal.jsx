@@ -114,6 +114,11 @@ const UpdatePantryModal = ({ setModalMode, data, meOnly }) => {
     }
   };
   const finalHandler = async () => {
+    const today = moment().format("YYYY-MM-DD ");
+    console.log(
+      "final",
+      moment(today + openingRef.current.value).format("YYYY-MM-DD hh:mm A")
+    );
     const newData = {
       pantryName: pantryNameRef.current?.value.trim(),
       aboutUs: aboutUsRef.current?.value.trim(),
@@ -125,12 +130,12 @@ const UpdatePantryModal = ({ setModalMode, data, meOnly }) => {
 
       other: "",
       pantryImage: readyDataRef.current.pantryImage,
-      open:
-        moment().format("YYYY-MM-DD ") +
-        moment(openingRef.current.value).subtract(8, "hours").format("HH:MM"),
-      close:
-        moment().format("YYYY-MM-DD ") +
-        moment(closingRef.current.value).subtract(8, "hours").format("HH:MM"),
+      open: moment(today + openingRef.current.value)
+        .subtract(hour, "hours")
+        .format("YYYY-MM-DD hh:mm"),
+      close: moment(today + closingRef.current.value)
+        .subtract(hour, "hours")
+        .format("YYYY-MM-DD hh:mm"),
       expirationCount: expiredRef.current?.value,
       distributedCount: distributedRef.current?.value,
     };
@@ -378,7 +383,7 @@ const UpdatePantryModal = ({ setModalMode, data, meOnly }) => {
               type="time"
               defaultValue={moment(data?.open)
                 .add(hour, "hours")
-                .format("HH:MM")}
+                .format("hh:mm")}
               onChange={() => {
                 hourHandler();
               }}
@@ -391,7 +396,7 @@ const UpdatePantryModal = ({ setModalMode, data, meOnly }) => {
               type="time"
               defaultValue={moment(data?.close)
                 .add(hour, "hours")
-                .format("HH:MM")}
+                .format("hh:mm")}
               onChange={() => {
                 hourHandler();
               }}
