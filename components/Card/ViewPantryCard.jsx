@@ -7,6 +7,8 @@ import DeletedModal from "../Modal/DeletedModal";
 const ViewPantryCard = ({ data, setViewMoreModal, meOnly }) => {
   const [modalMode, setModalMode] = useState("");
   const selectedDataRef = useRef();
+  const en = process.env.NEXT_PUBLIC_ADD_HOURS;
+
   return (
     <>
       {modalMode == "edit" && (
@@ -83,8 +85,13 @@ const ViewPantryCard = ({ data, setViewMoreModal, meOnly }) => {
                       <span className="font-semibold ">
                         Opening and Closing hours:{" "}
                       </span>
-                      {moment(open).format("hh:mm A")} -{" "}
-                      {moment(close).format("hh:mm A")}
+                      {moment(open)
+                        .add(parseInt(en), "hours")
+                        .format("hh:mm A")}{" "}
+                      -{" "}
+                      {moment(close)
+                        .add(parseInt(en), "hours")
+                        .format("hh:mm A")}
                     </p>
                   </div>
                 </div>

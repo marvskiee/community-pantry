@@ -85,7 +85,7 @@ const Home = () => {
       pantryName: pantryNameRef.current?.value.trim(),
       aboutUs: aboutUsRef.current?.value.trim(),
       address: addressRef.current?.value.trim(),
-      contact: contactRef.current?.value.trim(),
+      contact: contacts,
 
       // guideline: guidelineRef.current?.value.trim(),
       status: "pending",
@@ -129,7 +129,7 @@ const Home = () => {
       pantryName: pantryNameRef.current.value.trim(),
       aboutUs: aboutUsRef.current.value.trim(),
       address: addressRef.current.value.trim(),
-      contact: contactRef.current.value.trim(),
+      contact: contacts,
       closing: closingRef.current.value,
       opening: openingRef.current.value,
 
@@ -166,7 +166,7 @@ const Home = () => {
   const pantryNameRef = useRef();
   const aboutUsRef = useRef();
   const addressRef = useRef();
-  const contactRef = useRef();
+  const [contacts, setContacts] = useState();
   // const guidelineRef = useRef();
   const supplyNameRef = useRef();
 
@@ -199,6 +199,14 @@ const Home = () => {
     let clone = supplyList;
     clone[index].expiration_date = value;
     setSupplyList([...clone]);
+  };
+  const specialQuantityHandler = (index, value) => {
+    let clone = supplyList;
+
+    if (value > 0) {
+      clone[index].quantity = value;
+      setSupplyList([...clone]);
+    }
   };
   const quantityHandler = (action, index) => {
     let clone = supplyList;
@@ -291,7 +299,10 @@ const Home = () => {
             className="w-full pl-14 rounded-full px-4 py-3 border"
             placeholder="Contact Number"
             type="number"
-            ref={contactRef}
+            onChange={(e) => {
+              setContacts(e.target.value.slice(0, 10));
+            }}
+            value={contacts}
           />
         </div>
         <div className="rounded-3xl border p-4">
@@ -383,7 +394,7 @@ const Home = () => {
                     />
                   )}
                 </div>
-                <p>{name}</p>
+                <p className="p-4">{name}</p>
 
                 {!isLoading && (
                   <div className="flex items-center gap-2">
@@ -393,7 +404,14 @@ const Home = () => {
                     >
                       +
                     </button>
-                    <p>{quantity}</p>
+                    <input
+                      type="number"
+                      className="p-2 w-20 border rounded-full text-center"
+                      value={quantity}
+                      onChange={(e) =>
+                        specialQuantityHandler(index, e.target.value)
+                      }
+                    />
                     <button
                       onClick={() => quantityHandler("decrement", index)}
                       className="p-2 w-10 rounded-full bg-slate-900 text-white"

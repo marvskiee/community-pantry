@@ -36,6 +36,7 @@ const UpdatePantryModal = ({ setModalMode, data, meOnly }) => {
   const openingRef = useRef();
   const distributedRef = useRef(0);
   const expiredRef = useRef(0);
+  const [contacts, setContacts] = useState(data?.contact);
 
   const [hourError, setHourError] = useState(false);
 
@@ -103,13 +104,20 @@ const UpdatePantryModal = ({ setModalMode, data, meOnly }) => {
       }
     }
   };
+  const specialQuantityHandler = (index, value) => {
+    let clone = supplyList;
 
+    if (value > 0 || value.length == 0) {
+      clone[index].quantity = value;
+      setSupplyList([...clone]);
+    }
+  };
   const finalHandler = async () => {
     const newData = {
       pantryName: pantryNameRef.current?.value.trim(),
       aboutUs: aboutUsRef.current?.value.trim(),
       address: addressRef.current?.value.trim(),
-      contact: contactRef.current?.value.trim(),
+      contact: contacts,
       // guideline: guidelineRef.current?.value.trim(),
       pantryImage: readyDataRef.current.pantryImage,
       supply: readyDataRef.current.supply,
@@ -174,7 +182,7 @@ const UpdatePantryModal = ({ setModalMode, data, meOnly }) => {
       pantryName: pantryNameRef.current.value.trim(),
       aboutUs: aboutUsRef.current.value.trim(),
       address: addressRef.current.value.trim(),
-      contact: contactRef.current.value.trim(),
+      contact: contacts,
       // guideline: guidelineRef.current.value.trim(),
       closing: closingRef.current.value,
       opening: openingRef.current.value,
@@ -289,7 +297,7 @@ const UpdatePantryModal = ({ setModalMode, data, meOnly }) => {
             {error}
           </p>
         )}
-        <p className="font-semibold text-lg">Add Pantry</p>
+        <p className="font-semibold text-lg">Update Pantry</p>
         <div
           onClick={() => hiddenPantryImageRef.current.click()}
           className="relative overflow-hidden cursor-pointer flex  items-center justify-center  rounded-lg aspect-video w-full bg-slate-200"
@@ -338,13 +346,18 @@ const UpdatePantryModal = ({ setModalMode, data, meOnly }) => {
           defaultValue={data?.address}
           ref={addressRef}
         />
-        <input
-          className="rounded-full px-4 py-3 border"
-          placeholder="Contact Information"
-          type="number"
-          defaultValue={data?.contact}
-          ref={contactRef}
-        />
+        <div className="relative">
+          <span className="absolute left-4 top-3 text-lg">+63</span>
+          <input
+            className="w-full pl-14 rounded-full px-4 py-3 border"
+            placeholder="Contact Information"
+            type="number"
+            onChange={(e) => {
+              setContacts(e.target.value.slice(0, 10));
+            }}
+            value={contacts}
+          />
+        </div>
         <div className="rounded-3xl border p-4">
           {hourError && (
             <p className="py-2 text-rose-500 font-semibold">Invalid time!</p>
@@ -358,7 +371,9 @@ const UpdatePantryModal = ({ setModalMode, data, meOnly }) => {
               className="rounded-full px-4 py-3 border"
               placeholder="Contact Information"
               type="time"
-              defaultValue={moment(data?.open).format("HH:MM")}
+              defaultValue={moment(data?.open)
+                .add(parseInt(process.env.NEXT_PUBLIC_ADD_HOURS), "hours")
+                .format("HH:MM")}
               onChange={() => {
                 hourHandler();
               }}
@@ -369,7 +384,9 @@ const UpdatePantryModal = ({ setModalMode, data, meOnly }) => {
               className="rounded-full px-4 py-3 border"
               placeholder="Contact Information"
               type="time"
-              defaultValue={moment(data?.close).format("HH:MM")}
+              defaultValue={moment(data?.close)
+                .add(parseInt(process.env.NEXT_PUBLIC_ADD_HOURS), "hours")
+                .format("HH:MM")}
               onChange={() => {
                 hourHandler();
               }}
@@ -437,7 +454,8 @@ const UpdatePantryModal = ({ setModalMode, data, meOnly }) => {
                       />
                     )}
                   </div>
-                  <p>{name}</p>
+                  <p className="p-4">{name}</p>
+
                   {!isLoading && (
                     <div className="flex items-center gap-2">
                       <button
@@ -446,7 +464,14 @@ const UpdatePantryModal = ({ setModalMode, data, meOnly }) => {
                       >
                         +
                       </button>
-                      <p>{quantity}</p>
+                      <input
+                        type="number"
+                        className="p-2 w-20 border rounded-full text-center"
+                        value={quantity}
+                        onChange={(e) =>
+                          specialQuantityHandler(index, e.target.value)
+                        }
+                      />
                       <button
                         onClick={() => quantityHandler("decrement", index)}
                         className="p-2 w-10 rounded-full bg-slate-900 text-white"

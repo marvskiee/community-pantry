@@ -100,7 +100,7 @@ export const idChecker = async (id) => {
 };
 
 export const updatePassword = async (id, newData) => {
-  const res = await fetch("/api/user/update/" + id, {
+  const res = await fetch("/api/user/update_password/" + id, {
     method: "PUT",
     headers: {
       Accept: "application/json",
