@@ -124,8 +124,12 @@ const UpdatePantryModal = ({ setModalMode, data, meOnly }) => {
 
       other: "",
       pantryImage: readyDataRef.current.pantryImage,
-      open: moment().format("YYYY-MM-DD ") + openingRef.current.value,
-      close: moment().format("YYYY-MM-DD ") + closingRef.current.value,
+      open:
+        moment().format("YYYY-MM-DD ") +
+        moment(openingRef.current.value).subtract(8, "hours").format("hh:mm"),
+      close:
+        moment().format("YYYY-MM-DD ") +
+        moment(closingRef.current.value).subtract(8, "hours").format("hh:mm"),
       expirationCount: expiredRef.current?.value,
       distributedCount: distributedRef.current?.value,
     };
