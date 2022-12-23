@@ -50,13 +50,8 @@ const ViewMoreModal = ({ data, setViewMoreModal }) => {
               <span className="font-semibold text-lg">
                 Opening and Closing hours:{" "}
               </span>
-              {moment(open)
-                .add(parseInt(process.env.NEXT_PUBLIC_ADD_HOURS), "hours")
-                .format("hh:mm A")}{" "}
-              -{" "}
-              {moment(close)
-                .add(parseInt(process.env.NEXT_PUBLIC_ADD_HOURS), "hours")
-                .format("hh:mm A")}
+              {moment(open).add(8, "hours").format("hh:mm A")} -{" "}
+              {moment(close).add(8, "hours").format("hh:mm A")}
             </p>
             {/* <p>
               <span className="font-semibold text-lg">Guidelines: </span>

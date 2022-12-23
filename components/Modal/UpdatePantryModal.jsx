@@ -371,9 +371,7 @@ const UpdatePantryModal = ({ setModalMode, data, meOnly }) => {
               className="rounded-full px-4 py-3 border"
               placeholder="Contact Information"
               type="time"
-              defaultValue={moment(data?.open)
-                .add(parseInt(process.env.NEXT_PUBLIC_ADD_HOURS), "hours")
-                .format("HH:MM")}
+              defaultValue={moment(data?.open).add(8, "hours").format("HH:MM")}
               onChange={() => {
                 hourHandler();
               }}
@@ -384,9 +382,7 @@ const UpdatePantryModal = ({ setModalMode, data, meOnly }) => {
               className="rounded-full px-4 py-3 border"
               placeholder="Contact Information"
               type="time"
-              defaultValue={moment(data?.close)
-                .add(parseInt(process.env.NEXT_PUBLIC_ADD_HOURS), "hours")
-                .format("HH:MM")}
+              defaultValue={moment(data?.close).add(8, "hours").format("HH:MM")}
               onChange={() => {
                 hourHandler();
               }}

@@ -35,13 +35,9 @@ const DashboardCard = ({ data, guidelines }) => {
                 <div className="text-left">
                   <p className="text-lg font-semibold">{pantryName}</p>
                   <p className="">
-                    {moment(open)
-                      .add(parseInt(process.env.NEXT_PUBLIC_ADD_HOURS), "hours")
-                      .format("hh:mm A")}
+                    {moment(open).add(8, "hours").format("hh:mm A")}
                     {" - "}
-                    {moment(close)
-                      .add(parseInt(process.env.NEXT_PUBLIC_ADD_HOURS), "hours")
-                      .format("hh:mm A")}
+                    {moment(close).add(8, "hours").format("hh:mm A")}
                   </p>
                   <p className="">{address}</p>
                 </div>
