@@ -11,7 +11,6 @@ import { useAppContext } from "../../context/AppContext";
 import { storage } from "../../services/firebase";
 import { updatePantry, getPantry } from "../../services/pantry.services";
 import moment from "moment";
-import { hour } from "../../services/hous";
 
 const UpdatePantryModal = ({ setModalMode, data, meOnly }) => {
   console.log(data);
@@ -381,9 +380,7 @@ const UpdatePantryModal = ({ setModalMode, data, meOnly }) => {
               className="rounded-full px-4 py-3 border"
               placeholder="Contact Information"
               type="time"
-              defaultValue={moment(data?.open)
-                .add(hour, "hours")
-                .format("hh:mm")}
+              defaultValue={moment(data?.open).format("hh:mm")}
               onChange={() => {
                 hourHandler();
               }}
@@ -394,9 +391,7 @@ const UpdatePantryModal = ({ setModalMode, data, meOnly }) => {
               className="rounded-full px-4 py-3 border"
               placeholder="Contact Information"
               type="time"
-              defaultValue={moment(data?.close)
-                .add(hour, "hours")
-                .format("hh:mm")}
+              defaultValue={moment(data?.close).format("hh:mm")}
               onChange={() => {
                 hourHandler();
               }}

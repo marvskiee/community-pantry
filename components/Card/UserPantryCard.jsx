@@ -8,7 +8,6 @@ import {
   PermanentDeletedPantry,
 } from "../index";
 import moment from "moment";
-import { hour } from "../../services/hous";
 const UserPantryCard = ({ data, status, meOnly }) => {
   const [modalMode, setModalMode] = useState("");
   const selectedDataRef = useRef();
@@ -172,8 +171,8 @@ const UserPantryCard = ({ data, status, meOnly }) => {
                         <span className="font-semibold text-lg">
                           Opening and Closing hours:{" "}
                         </span>
-                        {moment(open).add(hour, "hours").format("hh:mm A")} -{" "}
-                        {moment(close).add(hour, "hours").format("hh:mm A")}
+                        {moment(open).format("hh:mm A")} -{" "}
+                        {moment(close).format("hh:mm A")}
                       </p>
                       <p>
                         <span className="font-semibold text-lg">
