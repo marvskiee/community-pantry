@@ -17,7 +17,7 @@ async function sendEmail(req, res) {
     <meta http-equiv="Content-Type" content="text/html charset=UTF-8" />
   </head>
     <body style="text-decoration:none;font-family:sans-serif;background-color:rgb(243,248,249)">
-    <p style="text-align:center;"><img style="width:200px;height:200px;background:#90EE90;" src="https://firebasestorage.googleapis.com/v0/b/community-pantry-a18e1.appspot.com/o/images%2Flogo-removebg-preview.png?alt=media&token=0be212cb-eb8c-4108-8221-d1e0e5bb995e"/></p>
+    <p style="text-align:center;"><img style="width:200px;height:200px;background:#90EE90;" src="https://firebasestorage.googleapis.com/v0/b/community-pantry-a18e1.appspot.com/o/images%2Flogo-removebg-preview.png?alt=media&token=215955e3-25e0-48e9-9a83-e7b2f160f2b4"/></p>
     <p style="padding:10px;font-size:14pt;font-weight:600;text-align:center;width:100%;">Confirm your email address</p>
     <div style="margin:10px">
     <p>Hello ${username},</p>
